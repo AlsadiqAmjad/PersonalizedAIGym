@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Navigation from "@/components/Navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { userAPI } from "@/services/api";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Search, 
   Clock, 
@@ -12,100 +15,68 @@ import {
   Zap, 
   Play,
   Star,
-  Filter
+  Filter,
+  Loader2
 } from "lucide-react";
 
-const workoutLibrary = [
-  {
-    id: 1,
-    name: "Upper Body Strength",
-    category: "Strength",
-    duration: 45,
-    difficulty: "Intermediate",
-    equipment: ["Dumbbells", "Bench"],
-    muscleGroups: ["Chest", "Back", "Shoulders", "Arms"],
-    rating: 4.8,
-    description: "Build upper body strength with compound movements",
-    image: "💪",
-  },
-  {
-    id: 2,
-    name: "HIIT Cardio Blast",
-    category: "Cardio",
-    duration: 20,
-    difficulty: "Advanced",
-    equipment: ["Bodyweight"],
-    muscleGroups: ["Full Body"],
-    rating: 4.9,
-    description: "High-intensity interval training for maximum calorie burn",
-    image: "🔥",
-  },
-  {
-    id: 3,
-    name: "Lower Body Power",
-    category: "Strength",
-    duration: 50,
-    difficulty: "Intermediate",
-    equipment: ["Barbell", "Dumbbells"],
-    muscleGroups: ["Legs", "Glutes"],
-    rating: 4.7,
-    description: "Develop explosive power in your legs and glutes",
-    image: "🦵",
-  },
-  {
-    id: 4,
-    name: "Core & Stability",
-    category: "Core",
-    duration: 30,
-    difficulty: "Beginner",
-    equipment: ["Bodyweight", "Mat"],
-    muscleGroups: ["Core", "Abs"],
-    rating: 4.6,
-    description: "Strengthen your core and improve stability",
-    image: "⚡",
-  },
-  {
-    id: 5,
-    name: "Full Body Circuit",
-    category: "Circuit",
-    duration: 35,
-    difficulty: "Intermediate",
-    equipment: ["Dumbbells", "Kettlebells"],
-    muscleGroups: ["Full Body"],
-    rating: 4.8,
-    description: "Complete full-body workout in circuit format",
-    image: "🎯",
-  },
-  {
-    id: 6,
-    name: "Yoga Flow",
-    category: "Flexibility",
-    duration: 40,
-    difficulty: "Beginner",
-    equipment: ["Mat"],
-    muscleGroups: ["Full Body"],
-    rating: 4.5,
-    description: "Improve flexibility and mental clarity",
-    image: "🧘",
-  },
-];
+interface Workout {
+  id: number;
+  name: string;
+  category: string;
+  duration: number;
+  difficulty: string;
+  equipment: string[];
+  muscleGroups: string[];
+  rating: number;
+  description: string;
+  image: string;
+}
 
-const categories = ["All", "Strength", "Cardio", "Core", "Circuit", "Flexibility"];
-const difficulties = ["All", "Beginner", "Intermediate", "Advanced"];
+interface WorkoutLibraryData {
+  workouts: Workout[];
+  total: number;
+  categories: string[];
+  difficulties: string[];
+}
 
 const Workouts = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
+  const [workoutData, setWorkoutData] = useState<WorkoutLibraryData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { token } = useAuth();
+  const { toast } = useToast();
 
-  const filteredWorkouts = workoutLibrary.filter(workout => {
-    const matchesSearch = workout.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         workout.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "All" || workout.category === selectedCategory;
-    const matchesDifficulty = selectedDifficulty === "All" || workout.difficulty === selectedDifficulty;
-    
-    return matchesSearch && matchesCategory && matchesDifficulty;
-  });
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      if (!token) return;
+      
+      try {
+        const response = await userAPI.getWorkoutLibrary(token, {
+          category: selectedCategory !== "All" ? selectedCategory : undefined,
+          difficulty: selectedDifficulty !== "All" ? selectedDifficulty : undefined,
+          search: searchTerm || undefined,
+        });
+        
+        if (response.success && response.data) {
+          setWorkoutData(response.data);
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load workouts",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWorkouts();
+  }, [token, selectedCategory, selectedDifficulty, searchTerm, toast]);
+
+  const filteredWorkouts = workoutData?.workouts || [];
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -124,6 +95,22 @@ const Workouts = () => {
       default: return "outline";
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <Loader2 className="h-12 w-12 animate-spin text-accent mx-auto mb-4" />
+              <p className="text-muted-foreground">Loading workout library...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -155,7 +142,7 @@ const Workouts = () => {
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              {categories.map(category => (
+              {workoutData?.categories.map(category => (
                 <SelectItem key={category} value={category}>{category}</SelectItem>
               ))}
             </SelectContent>
@@ -166,7 +153,7 @@ const Workouts = () => {
               <SelectValue placeholder="Difficulty" />
             </SelectTrigger>
             <SelectContent>
-              {difficulties.map(difficulty => (
+              {workoutData?.difficulties.map(difficulty => (
                 <SelectItem key={difficulty} value={difficulty}>{difficulty}</SelectItem>
               ))}
             </SelectContent>
@@ -181,7 +168,7 @@ const Workouts = () => {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-muted-foreground">
-            Showing {filteredWorkouts.length} of {workoutLibrary.length} workouts
+            Showing {filteredWorkouts.length} of {workoutData?.total || 0} workouts
           </p>
         </div>
 
@@ -276,7 +263,7 @@ const Workouts = () => {
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6">Recommended for You</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {workoutLibrary.slice(0, 3).map((workout) => (
+            {filteredWorkouts.slice(0, 3).map((workout) => (
               <Card key={workout.id} className="bg-gradient-accent/10 border border-accent/20 shadow-accent/20">
                 <CardHeader>
                   <div className="flex items-center gap-3">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import Navigation from "@/components/Navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { adminAPI } from "@/services/api";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Search, 
   Users, 
@@ -16,99 +19,102 @@ import {
   UserCheck,
   UserX,
   Eye,
-  MoreVertical
+  MoreVertical,
+  Loader2
 } from "lucide-react";
 
-// Mock data for admin dashboard
-const mockStats = {
-  totalUsers: 12547,
-  activeUsers: 8932,
-  totalWorkouts: 45231,
-  averageRating: 4.7,
-  newUsersToday: 127,
-  workoutsToday: 892,
-};
+interface AdminStats {
+  totalUsers: number;
+  activeUsers: number;
+  totalWorkouts: number;
+  completedWorkouts: number;
+  averageWorkoutDuration: number;
+  popularExercises: string[];
+  userGrowth: Array<{ date: string; count: number }>;
+}
 
-const mockUsers = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    email: "sarah@example.com",
-    status: "active",
-    plan: "Premium",
-    joinDate: "2024-01-15",
-    lastActive: "2024-01-20",
-    workouts: 45,
-  },
-  {
-    id: 2,
-    name: "Mike Chen",
-    email: "mike@example.com",
-    status: "active",
-    plan: "Free",
-    joinDate: "2024-01-10",
-    lastActive: "2024-01-19",
-    workouts: 23,
-  },
-  {
-    id: 3,
-    name: "Emma Rodriguez",
-    email: "emma@example.com",
-    status: "inactive",
-    plan: "Premium",
-    joinDate: "2024-01-05",
-    lastActive: "2024-01-18",
-    workouts: 67,
-  },
-  {
-    id: 4,
-    name: "Alex Thompson",
-    email: "alex@example.com",
-    status: "suspended",
-    plan: "Free",
-    joinDate: "2024-01-12",
-    lastActive: "2024-01-17",
-    workouts: 12,
-  },
-  {
-    id: 5,
-    name: "Lisa Wang",
-    email: "lisa@example.com",
-    status: "active",
-    plan: "Premium",
-    joinDate: "2024-01-08",
-    lastActive: "2024-01-20",
-    workouts: 89,
-  },
-];
+interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const Admin = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTab, setSelectedTab] = useState("overview");
+  const [adminStats, setAdminStats] = useState<AdminStats | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { token } = useAuth();
+  const { toast } = useToast();
 
-  const filteredUsers = mockUsers.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      if (!token) return;
+      
+      try {
+        // Fetch admin stats
+        const statsResponse = await adminAPI.getStats(token);
+        if (statsResponse.success && statsResponse.data) {
+          setAdminStats(statsResponse.data);
+        }
+
+        // Fetch users
+        const usersResponse = await adminAPI.getAllUsers(token, { limit: 50 });
+        if (usersResponse.success && usersResponse.data) {
+          setUsers(usersResponse.data);
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load admin data",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAdminData();
+  }, [token, toast]);
+
+  const filteredUsers = users.filter(user => 
+    `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "active":
-        return <Badge className="bg-success text-success-foreground">Active</Badge>;
-      case "inactive":
-        return <Badge variant="secondary">Inactive</Badge>;
-      case "suspended":
-        return <Badge variant="destructive">Suspended</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
+  const getStatusBadge = (isActive: boolean) => {
+    return isActive 
+      ? <Badge className="bg-success text-success-foreground">Active</Badge>
+      : <Badge variant="secondary">Inactive</Badge>;
   };
 
-  const getPlanBadge = (plan: string) => {
-    return plan === "Premium" 
-      ? <Badge className="bg-accent text-accent-foreground">Premium</Badge>
-      : <Badge variant="outline">Free</Badge>;
+  const getRoleBadge = (role: string) => {
+    return role === "admin" 
+      ? <Badge className="bg-accent text-accent-foreground">Admin</Badge>
+      : <Badge variant="outline">User</Badge>;
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <Loader2 className="h-12 w-12 animate-spin text-accent mx-auto mb-4" />
+              <p className="text-muted-foreground">Loading admin dashboard...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -140,19 +146,21 @@ const Admin = () => {
               <Card className="bg-gradient-card border-0 shadow-card">
                 <CardContent className="p-6 text-center">
                   <Users className="h-8 w-8 text-accent mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{mockStats.totalUsers.toLocaleString()}</div>
+                  <div className="text-2xl font-bold">{adminStats?.totalUsers?.toLocaleString() || 0}</div>
                   <div className="text-sm text-muted-foreground">Total Users</div>
-                  <div className="text-xs text-success mt-1">+{mockStats.newUsersToday} today</div>
+                  <div className="text-xs text-success mt-1">
+                    {adminStats?.userGrowth?.length || 0} new this week
+                  </div>
                 </CardContent>
               </Card>
 
               <Card className="bg-gradient-card border-0 shadow-card">
                 <CardContent className="p-6 text-center">
                   <UserCheck className="h-8 w-8 text-success mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{mockStats.activeUsers.toLocaleString()}</div>
+                  <div className="text-2xl font-bold">{adminStats?.activeUsers?.toLocaleString() || 0}</div>
                   <div className="text-sm text-muted-foreground">Active Users</div>
                   <div className="text-xs text-muted-foreground mt-1">
-                    {Math.round((mockStats.activeUsers / mockStats.totalUsers) * 100)}% of total
+                    {adminStats ? Math.round((adminStats.activeUsers / adminStats.totalUsers) * 100) : 0}% of total
                   </div>
                 </CardContent>
               </Card>
@@ -160,18 +168,22 @@ const Admin = () => {
               <Card className="bg-gradient-card border-0 shadow-card">
                 <CardContent className="p-6 text-center">
                   <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{mockStats.totalWorkouts.toLocaleString()}</div>
+                  <div className="text-2xl font-bold">{adminStats?.totalWorkouts?.toLocaleString() || 0}</div>
                   <div className="text-sm text-muted-foreground">Total Workouts</div>
-                  <div className="text-xs text-success mt-1">+{mockStats.workoutsToday} today</div>
+                  <div className="text-xs text-success mt-1">
+                    {adminStats?.completedWorkouts || 0} completed
+                  </div>
                 </CardContent>
               </Card>
 
               <Card className="bg-gradient-card border-0 shadow-card">
                 <CardContent className="p-6 text-center">
                   <TrendingUp className="h-8 w-8 text-warning mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{mockStats.averageRating}</div>
-                  <div className="text-sm text-muted-foreground">Avg Rating</div>
-                  <div className="text-xs text-success mt-1">+0.2 this month</div>
+                  <div className="text-2xl font-bold">{adminStats?.averageWorkoutDuration || 0}</div>
+                  <div className="text-sm text-muted-foreground">Avg Duration (min)</div>
+                  <div className="text-xs text-success mt-1">
+                    {adminStats?.popularExercises?.length || 0} popular exercises
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -248,10 +260,9 @@ const Admin = () => {
                     <TableRow>
                       <TableHead>User</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Plan</TableHead>
-                      <TableHead>Workouts</TableHead>
+                      <TableHead>Role</TableHead>
                       <TableHead>Join Date</TableHead>
-                      <TableHead>Last Active</TableHead>
+                      <TableHead>Last Updated</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -260,22 +271,21 @@ const Admin = () => {
                       <TableRow key={user.id}>
                         <TableCell>
                           <div>
-                            <div className="font-medium">{user.name}</div>
+                            <div className="font-medium">{user.firstName} {user.lastName}</div>
                             <div className="text-sm text-muted-foreground">{user.email}</div>
                           </div>
                         </TableCell>
-                        <TableCell>{getStatusBadge(user.status)}</TableCell>
-                        <TableCell>{getPlanBadge(user.plan)}</TableCell>
-                        <TableCell>{user.workouts}</TableCell>
-                        <TableCell>{user.joinDate}</TableCell>
-                        <TableCell>{user.lastActive}</TableCell>
+                        <TableCell>{getStatusBadge(user.isActive)}</TableCell>
+                        <TableCell>{getRoleBadge(user.role)}</TableCell>
+                        <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                        <TableCell>{new Date(user.updatedAt).toLocaleDateString()}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <Button size="sm" variant="outline">
                               <Eye className="h-4 w-4" />
                             </Button>
                             <Switch 
-                              checked={user.status === "active"} 
+                              checked={user.isActive} 
                               className="data-[state=checked]:bg-success"
                             />
                             <Button size="sm" variant="ghost">

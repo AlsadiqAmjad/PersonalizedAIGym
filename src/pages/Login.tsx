@@ -5,30 +5,68 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Zap, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Zap, Mail, Lock, Eye, EyeOff, User, Users, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login, loginWithRole } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      let success;
+      if (role === "user") {
+        success = await login(email, password);
+      } else {
+        success = await loginWithRole(email, password, role);
+      }
+
+      if (success) {
+        const roleMessages = {
+          user: "Successfully logged in to your AI Gym Trainer account.",
+          coach: "Welcome back, Coach! Access your client management dashboard.",
+          admin: "Admin access granted. Welcome to the admin panel."
+        };
+
+        toast({
+          title: "Welcome back!",
+          description: roleMessages[role as keyof typeof roleMessages],
+        });
+
+        // Navigate based on role
+        const routes = {
+          user: "/dashboard",
+          coach: "/coach-dashboard",
+          admin: "/admin-dashboard"
+        };
+        navigate(routes[role as keyof typeof routes]);
+      } else {
+        toast({
+          title: "Login Failed",
+          description: "Invalid email or password. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
       toast({
-        title: "Welcome back!",
-        description: "Successfully logged in to your AI Gym Trainer account.",
+        title: "Login Error",
+        description: "An error occurred during login. Please try again.",
+        variant: "destructive",
       });
-      navigate("/dashboard");
-    }, 1500);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -106,6 +144,35 @@ const Login = () => {
                     )}
                   </Button>
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="role">Login As</Label>
+                <Select value={role} onValueChange={setRole}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="user">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        <span>User</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="coach">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        <span>Coach</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="admin">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        <span>Admin</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <Button

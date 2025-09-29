@@ -10,8 +10,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { Zap, ArrowLeft, ArrowRight, User, Target, Clock, Dumbbell, Apple } from "lucide-react";
+import { Zap, ArrowLeft, ArrowRight, User, Target, Clock, Dumbbell, Apple, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { userAPI, UserProfile, UserPreferences } from "@/services/api";
 
 interface FormData {
   // Personal Info
@@ -27,6 +29,7 @@ interface FormData {
   // Availability & Equipment
   workoutDays: string;
   sessionDuration: string;
+  workoutSplit: string;
   equipment: string[];
   
   // Health & Preferences
@@ -65,6 +68,7 @@ const Onboarding = () => {
     fitnessLevel: "",
     workoutDays: "",
     sessionDuration: "",
+    workoutSplit: "",
     equipment: [],
     injuries: "",
     preferences: "",
@@ -72,6 +76,7 @@ const Onboarding = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { token } = useAuth();
 
   const updateFormData = (field: keyof FormData, value: string | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -99,17 +104,71 @@ const Onboarding = () => {
   };
 
   const handleSubmit = async () => {
+    if (!token) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to complete onboarding",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
     setIsLoading(true);
     
-    // Simulate AI plan generation
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Convert form data to API format
+      const profile: UserProfile = {
+        age: parseInt(formData.age),
+        weight: parseFloat(formData.weight),
+        height: parseFloat(formData.height),
+        gender: formData.gender as 'male' | 'female',
+        fitnessLevel: formData.fitnessLevel as 'beginner' | 'intermediate' | 'advanced',
+        goals: [formData.primaryGoal],
+        availableEquipment: formData.equipment,
+        timePerWorkout: parseInt(formData.sessionDuration),
+        workoutDaysPerWeek: parseInt(formData.workoutDays),
+        workoutSplit: formData.workoutSplit as 'ppl' | 'fb' | 'ul' | 'custom',
+        dietaryRestrictions: [],
+        allergies: [],
+      };
+
+      const preferences: UserPreferences = {
+        workoutTime: 'morning',
+        preferredExercises: [],
+        dislikedExercises: [],
+        notifications: {
+          email: true,
+          push: true,
+          workoutReminders: true,
+        },
+      };
+
+      const response = await userAPI.completeOnboarding(token, { profile, preferences });
+      
+      if (response.success) {
+        toast({
+          title: "🎉 Your personalized plan is ready!",
+          description: "Welcome to your AI-powered fitness journey. Let's get started!",
+        });
+        navigate("/dashboard");
+      } else {
+        toast({
+          title: "Onboarding Failed",
+          description: "Failed to create your personalized plan. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Onboarding error:', error);
       toast({
-        title: "🎉 Your personalized plan is ready!",
-        description: "Welcome to your AI-powered fitness journey. Let's get started!",
+        title: "Onboarding Error",
+        description: "An error occurred during onboarding. Please try again.",
+        variant: "destructive",
       });
-      navigate("/dashboard");
-    }, 3000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getCurrentStepData = () => {
@@ -137,8 +196,6 @@ const Onboarding = () => {
                   <SelectContent>
                     <SelectItem value="male">Male</SelectItem>
                     <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                    <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -256,6 +313,28 @@ const Onboarding = () => {
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="60+" id="60+" />
                   <Label htmlFor="60+">60+ minutes</Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div className="space-y-4">
+              <Label>What workout split do you prefer? (For weight training)</Label>
+              <RadioGroup value={formData.workoutSplit} onValueChange={(value) => updateFormData("workoutSplit", value)}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="ppl" id="ppl" />
+                  <Label htmlFor="ppl">PPL (Push/Pull/Legs) - 6 days/week</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="fb" id="fb" />
+                  <Label htmlFor="fb">Full Body - 3-4 days/week</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="ul" id="ul" />
+                  <Label htmlFor="ul">Upper/Lower - 4 days/week</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="custom" id="custom" />
+                  <Label htmlFor="custom">Let AI decide based on my schedule</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -451,7 +530,7 @@ const Onboarding = () => {
             >
               {isLoading ? (
                 <>
-                  <Dumbbell className="h-4 w-4 mr-2 animate-pulse" />
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Generating Your Plan...
                 </>
               ) : (

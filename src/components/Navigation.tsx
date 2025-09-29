@@ -1,18 +1,36 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Menu, X, User, Dumbbell } from "lucide-react";
+import { Menu, X, User, Bot, Zap, Shield, Users, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user, logout } = useAuth();
 
-  const navigation = [
-    { name: "Dashboard", href: "/dashboard" },
-    { name: "Workouts", href: "/workouts" },
-    { name: "Nutrition", href: "/nutrition" },
-    { name: "Progress", href: "/progress" },
-  ];
+  const getNavigationItems = () => {
+    const baseItems: Array<{ name: string; href: string; icon?: any }> = [
+      { name: "Dashboard", href: "/dashboard" },
+      { name: "Progress", href: "/progress" },
+    ];
+
+    if (user?.role === 'admin') {
+      return [
+        ...baseItems,
+        { name: "Admin Panel", href: "/admin-dashboard", icon: Shield },
+      ];
+    } else if (user?.role === 'coach') {
+      return [
+        ...baseItems,
+        { name: "Coach Panel", href: "/coach-dashboard", icon: Users },
+      ];
+    }
+
+    return baseItems;
+  };
+
+  const navigation = getNavigationItems();
 
   return (
     <nav className="bg-card/80 backdrop-blur-md border-b border-border sticky top-0 z-50">
@@ -20,8 +38,9 @@ const Navigation = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
-              <div className="bg-gradient-hero p-2 rounded-lg">
-                <Dumbbell className="h-6 w-6 text-white" />
+              <div className="bg-gradient-hero p-2 rounded-lg relative">
+                <Bot className="h-6 w-6 text-white" />
+                <Zap className="h-3 w-3 text-yellow-300 absolute -top-1 -right-1" />
               </div>
               <span className="text-xl font-bold bg-gradient-hero bg-clip-text text-transparent">
                 AI Gym Trainer
@@ -35,18 +54,25 @@ const Navigation = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-smooth ${
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-smooth flex items-center gap-2 ${
                   location.pathname === item.href
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
+                {item.icon && <item.icon className="h-4 w-4" />}
                 {item.name}
               </Link>
             ))}
-            <Button variant="outline" size="sm">
-              <User className="h-4 w-4 mr-2" />
-              Profile
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/profile">
+                <User className="h-4 w-4 mr-2" />
+                Profile
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={logout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
             </Button>
           </div>
 
@@ -82,10 +108,16 @@ const Navigation = () => {
                 {item.name}
               </Link>
             ))}
-            <div className="pt-2">
-              <Button variant="outline" size="sm" className="w-full">
-                <User className="h-4 w-4 mr-2" />
-                Profile
+            <div className="pt-2 space-y-2">
+              <Button variant="outline" size="sm" className="w-full" asChild>
+                <Link to="/profile">
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Link>
+              </Button>
+              <Button variant="outline" size="sm" className="w-full" onClick={logout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
               </Button>
             </div>
           </div>
