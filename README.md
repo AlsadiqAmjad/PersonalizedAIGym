@@ -72,68 +72,35 @@ your-gym-ai/
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js (v16 or higher)
-- MongoDB (local or cloud)
-- OpenAI API key
+> **📋 For detailed setup instructions, troubleshooting, and common issues, see [SETUP.md](./SETUP.md)**
 
-### Installation
+### Quick Setup
+1. Clone the repository
+2. Install dependencies: `npm install` (frontend) and `cd backend && npm install` (backend)
+3. Copy `backend/.env.example` to `backend/.env` and configure
+4. Start MongoDB
+5. Run `npm run dev` (frontend) and `cd backend && npm run dev` (backend)
+6. Access at `http://localhost:8080`
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/SaeedAlhabib/your-gym-ai.git
-   cd your-gym-ai
-   ```
 
-2. **Install frontend dependencies**
-   ```bash
-   npm install
-   ```
+## 👤 Sample Accounts
 
-3. **Install backend dependencies**
-   ```bash
-   cd backend
-   npm install
-   cd ..
-   ```
-
-4. **Environment Setup**
-   
-   Create `backend/.env` file:
-   ```env
-   MONGODB_URI=mongodb://localhost:27017/gym-ai
-   JWT_SECRET=your-super-secret-jwt-key
-   OPENAI_API_KEY=your-openai-api-key
-   OPENAI_MODEL=gpt-3.5-turbo
-   CORS_ORIGIN=http://localhost:8080
-   PORT=3001
-   NODE_ENV=development
-   ```
-
-5. **Start the application**
-   
-   **Terminal 1 - Backend:**
-   ```bash
-   cd backend
-   npm start
-   ```
-   
-   **Terminal 2 - Frontend:**
-   ```bash
-   npm run dev
-   ```
-
-6. **Access the application**
-   - Frontend: http://localhost:8080
-   - Backend API: http://localhost:3001
-   - API Health: http://localhost:3001/api/v1/health
-
-## 👤 Default Accounts
+After running the seed script (`node backend/scripts/seedDatabase.js`):
 
 ### Admin Account
-- **Email**: `saeedalhabib@admin.com`
-- **Password**: `Saeed123`
+- **Email**: `admin@example.com`
+- **Password**: `admin123`
 - **Access**: Full system administration
+
+### Demo User Account
+- **Email**: `demo@example.com`
+- **Password**: `password123`
+- **Access**: User dashboard with sample profile
+
+### Demo Coach Account
+- **Email**: `coach@example.com`
+- **Password**: `password123`
+- **Access**: Coach dashboard with sample profile
 
 ## 🔧 API Endpoints
 
