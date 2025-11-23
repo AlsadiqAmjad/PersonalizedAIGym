@@ -4,6 +4,7 @@ const Meal = require('../models/Meal');
 const NutritionPlan = require('../models/NutritionPlan');
 const WorkoutSchedule = require('../models/WorkoutSchedule');
 const OpenAIService = require('../services/openai');
+const ParallelAIService = require('../services/parallelAIService');
 const ScheduleService = require('../services/scheduleService');
 const ChatService = require('../services/chatService');
 
@@ -36,120 +37,112 @@ const completeOnboarding = async (req, res) => {
       preferences: { ...preferences }
     };
 
-    // Generate AI-powered workout and nutrition plans
+    // Generate AI-powered workout and nutrition plans using PARALLEL PROCESSING
     try {
+      console.log('=== STARTING PARALLEL AI GENERATION ===');
+      
       // Calculate daily calorie target
       const dailyCalorieTarget = OpenAIService.calculateDailyCalorieTarget(user.profile);
+      console.log('Daily calorie target:', dailyCalorieTarget);
 
-      // Generate workout plan with fallback to mock data
-      let exercises;
-      try {
-        exercises = await OpenAIService.generateWorkoutPlan(
+      // PARALLEL PROCESSING: Generate workout and nutrition plans simultaneously
+      const [exercisesResult, mealsResult] = await Promise.allSettled([
+        // Task 1: Generate workout plan using parallel processing
+        ParallelAIService.generateWorkoutPlanParallel(
           user.profile,
           user.preferences,
-          user.profile.workoutDaysPerWeek
-        );
-      } catch (error) {
-        console.log('AI workout generation failed, using fallback data:', error.message);
-        exercises = [
-          {
-            name: "Push-ups",
-            description: "Classic bodyweight exercise for chest and arms",
-            sets: 3,
-            reps: 12,
-            weight: 0,
-            duration: 0,
-            restTime: 60,
-            muscleGroups: ["chest", "shoulders", "triceps"],
-            equipment: ["bodyweight"],
-            instructions: [
-              "Start in plank position",
-              "Lower your body until chest nearly touches floor",
-              "Push back up to starting position"
-            ],
-            tips: [
-              "Keep your core engaged",
-              "Maintain straight body alignment"
-            ]
-          },
-          {
-            name: "Squats",
-            description: "Fundamental lower body exercise",
-            sets: 3,
-            reps: 15,
-            weight: 0,
-            duration: 0,
-            restTime: 60,
-            muscleGroups: ["quadriceps", "glutes", "hamstrings"],
-            equipment: ["bodyweight"],
-            instructions: [
-              "Stand with feet shoulder-width apart",
-              "Lower your body as if sitting back into a chair",
-              "Return to standing position"
-            ],
-            tips: [
-              "Keep your knees behind your toes",
-              "Engage your core throughout"
-            ]
-          }
-        ];
-      }
-
-      // Generate meal plan with fallback to mock data
-      let meals;
-      try {
-        const mealPlan = await OpenAIService.generateMealPlan(
+          user.profile.workoutDaysPerWeek,
+          user.profile.workoutSplit || 'custom'
+        ),
+        
+        // Task 2: Generate meal plan using parallel processing
+        ParallelAIService.generateMealPlanParallel(
           user.profile,
           dailyCalorieTarget,
           user.profile.dietaryRestrictions,
           user.profile.allergies
-        );
-        // Handle both array format and object with meals property
-        meals = Array.isArray(mealPlan) ? mealPlan : mealPlan.meals;
-      } catch (error) {
-        console.log('AI meal generation failed, using fallback data:', error.message);
-        meals = [
-          {
-            name: "Protein Smoothie",
-            description: "Nutritious breakfast smoothie",
-            calories: 300,
-            protein: 25,
-            carbs: 30,
-            fat: 8,
-            fiber: 5,
-            ingredients: ["banana", "protein powder", "almond milk", "spinach"],
-            instructions: [
-              "Add all ingredients to blender",
-              "Blend until smooth",
-              "Pour into glass and serve"
-            ],
-            prepTime: 5,
-            servings: 1,
-            mealType: "breakfast",
-            dietaryTags: ["high-protein", "quick"]
-          },
-          {
-            name: "Grilled Chicken Salad",
-            description: "Healthy lunch option",
-            calories: 400,
-            protein: 35,
-            carbs: 20,
-            fat: 15,
-            fiber: 8,
-            ingredients: ["chicken breast", "mixed greens", "tomatoes", "cucumber", "olive oil"],
-            instructions: [
-              "Grill chicken breast until cooked through",
-              "Chop vegetables and mix with greens",
-              "Slice chicken and add to salad",
-              "Drizzle with olive oil dressing"
-            ],
-            prepTime: 15,
-            servings: 1,
-            mealType: "lunch",
-            dietaryTags: ["high-protein", "low-carb"]
-          }
-        ];
+        )
+      ]);
+
+      // Handle workout generation result
+      let exercises;
+      if (exercisesResult.status === 'fulfilled') {
+        exercises = exercisesResult.value;
+        console.log('✅ Workout plan generated successfully:', exercises.length, 'exercises');
+      } else {
+        console.log('⚠️ Parallel workout generation failed, trying sequential:', exercisesResult.reason?.message);
+        try {
+          exercises = await OpenAIService.generateWorkoutPlan(
+            user.profile,
+            user.preferences,
+            user.profile.workoutDaysPerWeek
+          );
+        } catch (error) {
+          console.log('⚠️ Sequential workout generation failed, using fallback:', error.message);
+          exercises = OpenAIService.generateTemplateWorkout(
+            user.profile,
+            user.preferences,
+            user.profile.workoutDaysPerWeek,
+            user.profile.workoutSplit || 'custom'
+          );
+        }
       }
+
+      // Handle meal generation result
+      let meals;
+      if (mealsResult.status === 'fulfilled') {
+        meals = mealsResult.value;
+        // Handle both array format and object with meals property
+        meals = Array.isArray(meals) ? meals : (meals.meals || []);
+        console.log('✅ Meal plan generated successfully:', meals.length, 'meals');
+      } else {
+        console.log('⚠️ Parallel meal generation failed, trying sequential:', mealsResult.reason?.message);
+        try {
+          const mealPlan = await OpenAIService.generateMealPlan(
+            user.profile,
+            dailyCalorieTarget,
+            user.profile.dietaryRestrictions,
+            user.profile.allergies
+          );
+          meals = Array.isArray(mealPlan) ? mealPlan : mealPlan.meals;
+        } catch (error) {
+          console.log('⚠️ Sequential meal generation failed, using fallback:', error.message);
+          meals = [
+            {
+              name: "Protein Smoothie",
+              description: "Nutritious breakfast smoothie",
+              calories: 300,
+              protein: 25,
+              carbs: 30,
+              fat: 8,
+              fiber: 5,
+              ingredients: ["banana", "protein powder", "almond milk", "spinach"],
+              instructions: ["Add all ingredients to blender", "Blend until smooth", "Pour into glass and serve"],
+              prepTime: 5,
+              servings: 1,
+              mealType: "breakfast",
+              dietaryTags: ["high-protein", "quick"]
+            },
+            {
+              name: "Grilled Chicken Salad",
+              description: "Healthy lunch option",
+              calories: 400,
+              protein: 35,
+              carbs: 20,
+              fat: 15,
+              fiber: 8,
+              ingredients: ["chicken breast", "mixed greens", "tomatoes", "cucumber", "olive oil"],
+              instructions: ["Grill chicken breast until cooked through", "Chop vegetables and mix with greens", "Slice chicken and add to salad", "Drizzle with olive oil dressing"],
+              prepTime: 15,
+              servings: 1,
+              mealType: "lunch",
+              dietaryTags: ["high-protein", "low-carb"]
+            }
+          ];
+        }
+      }
+
+      console.log('=== PARALLEL GENERATION COMPLETE ===');
 
       // Save meals to database
       const savedMeals = await Meal.insertMany(meals.map(meal => ({
@@ -192,39 +185,93 @@ const completeOnboarding = async (req, res) => {
         user.profile.workoutDaysPerWeek
       );
 
-      // Generate workout plans for each workout type in the schedule
+      // Generate workout plans for each workout type in the schedule using PARALLEL PROCESSING
       const workoutPlans = {};
-      const uniqueWorkoutTypes = [...new Set(schedule.schedule.map(s => s.workoutType))];
+      const uniqueWorkoutTypes = [...new Set(schedule.schedule.map(s => s.workoutType))].filter(Boolean);
       
-      for (const workoutType of uniqueWorkoutTypes) {
-        if (workoutType) {
-          const workoutPlan = await OpenAIService.generateWorkoutPlan(
+      console.log('Generating workouts for types:', uniqueWorkoutTypes);
+      
+      // Generate all workout types in parallel
+      const workoutPromises = uniqueWorkoutTypes.map(async (workoutType) => {
+        try {
+          // Use parallel processing for each workout type
+          const workoutPlan = await ParallelAIService.generateWorkoutPlanParallel(
             user.profile,
             user.preferences,
             user.profile.workoutDaysPerWeek,
             workoutType
           );
 
-          // Set scheduled date to today at 9 AM
-          const scheduledDate = new Date();
-          scheduledDate.setHours(9, 0, 0, 0);
-          
-          const workout = new Workout({
-            userId,
-            workoutType,
-            name: `${workoutType.charAt(0).toUpperCase() + workoutType.slice(1)} Workout`,
-            description: `Personalized ${workoutType} workout for ${user.profile.fitnessLevel} level`,
-            duration: user.profile.timePerWorkout,
-            difficulty: user.profile.fitnessLevel,
-            exercises: workoutPlan,
-            scheduledDate: scheduledDate.toISOString(),
-            isCompleted: false,
-            currentExerciseIndex: 0
-          });
-          await workout.save();
-          
-          workoutPlans[workoutType] = workout._id;
+          return { workoutType, workoutPlan };
+        } catch (error) {
+          console.error(`Error generating ${workoutType} workout:`, error);
+          // Fallback to sequential
+          const workoutPlan = await OpenAIService.generateWorkoutPlan(
+            user.profile,
+            user.preferences,
+            user.profile.workoutDaysPerWeek,
+            workoutType
+          );
+          return { workoutType, workoutPlan };
         }
+      });
+
+      // Wait for all workouts to be generated in parallel
+      const workoutResults = await Promise.all(workoutPromises);
+      
+      // Create workout documents and schedule them properly
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      // Create workouts for each schedule item that needs one
+      for (let i = 0; i < schedule.schedule.length; i++) {
+        const scheduleItem = schedule.schedule[i];
+        if (!scheduleItem.workoutType) continue;
+        
+        // Find the workout plan for this workout type
+        const workoutResult = workoutResults.find(r => r.workoutType === scheduleItem.workoutType);
+        if (!workoutResult) continue;
+        
+        // Use the schedule date, or default to today if not set
+        let scheduledDate = scheduleItem.date ? new Date(scheduleItem.date) : new Date(today);
+        const dateStart = new Date(scheduledDate);
+        dateStart.setHours(0, 0, 0, 0);
+        const dateEnd = new Date(scheduledDate);
+        dateEnd.setHours(23, 59, 59, 999);
+        scheduledDate.setHours(9, 0, 0, 0);
+        
+        // Check if a workout already exists for this date and type
+        const existingWorkout = await Workout.findOne({
+          userId,
+          workoutType: scheduleItem.workoutType,
+          scheduledDate: {
+            $gte: dateStart,
+            $lt: dateEnd
+          }
+        });
+        
+        if (existingWorkout) {
+          scheduleItem.workoutId = existingWorkout._id;
+          continue;
+        }
+        
+        const workout = new Workout({
+          userId,
+          workoutType: scheduleItem.workoutType,
+          name: `${scheduleItem.workoutType.charAt(0).toUpperCase() + scheduleItem.workoutType.slice(1)} Workout`,
+          description: `Personalized ${scheduleItem.workoutType} workout for ${user.profile.fitnessLevel} level`,
+          duration: user.profile.timePerWorkout,
+          difficulty: user.profile.fitnessLevel,
+          exercises: workoutResult.workoutPlan,
+          scheduledDate: scheduledDate.toISOString(),
+          isCompleted: false,
+          currentExerciseIndex: 0
+        });
+        await workout.save();
+        
+        // Link workout to schedule item
+        scheduleItem.workoutId = workout._id;
+        workoutPlans[scheduleItem.workoutType] = workout._id;
       }
 
       // Update schedule with workout IDs
@@ -303,11 +350,38 @@ const getDashboard = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    // Get today's workout
-    const todaysWorkout = await Workout.getTodaysWorkout(userId);
+    // Get today's workout - try both methods
+    let todaysWorkout = await Workout.getTodaysWorkout(userId);
+    
+    // If no workout found via static method, try direct query
+    if (!todaysWorkout) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      todaysWorkout = await Workout.findOne({
+        userId,
+        scheduledDate: {
+          $gte: today,
+          $lt: tomorrow
+        }
+      }).sort({ scheduledDate: 1 }); // Get first workout of the day
+    }
 
-    // Get active nutrition plan
-    const activeNutritionPlan = await NutritionPlan.getActivePlan(userId);
+    // Get active nutrition plan with populated meals
+    let activeNutritionPlan = await NutritionPlan.getActivePlan(userId);
+    
+    // If nutrition plan exists, ensure meals are populated
+    if (activeNutritionPlan) {
+      // Check if meals need to be populated
+      if (activeNutritionPlan.meals && activeNutritionPlan.meals.length > 0) {
+        const firstMeal = activeNutritionPlan.meals[0];
+        if (typeof firstMeal === 'string' || firstMeal.toString().startsWith('ObjectId')) {
+          await activeNutritionPlan.populate('meals');
+        }
+      }
+    }
 
     // Get completed workouts count
     const completedWorkouts = await Workout.countDocuments({
@@ -1255,47 +1329,65 @@ const regenerateDailyNutrition = async (req, res) => {
 const getTodaysWorkout = async (req, res) => {
   try {
     const userId = req.user._id;
-    const todaysSchedule = await ScheduleService.getTodaysWorkout(userId);
     
-    if (!todaysSchedule) {
-      return res.status(404).json({
-        success: false,
-        message: 'No workout scheduled for today'
+    // Try to get workout directly first (faster)
+    let workout = await Workout.getTodaysWorkout(userId);
+    
+    // If not found, try to get from schedule
+    if (!workout) {
+      const todaysSchedule = await ScheduleService.getTodaysWorkout(userId);
+      
+      if (todaysSchedule && todaysSchedule.schedule) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        const todaysScheduleItem = todaysSchedule.schedule.find(s => {
+          const scheduleDate = new Date(s.date);
+          scheduleDate.setHours(0, 0, 0, 0);
+          return scheduleDate.getTime() >= today.getTime() && scheduleDate.getTime() < tomorrow.getTime();
+        });
+
+        if (todaysScheduleItem && todaysScheduleItem.workoutId) {
+          workout = await Workout.findById(todaysScheduleItem.workoutId);
+        }
+      }
+    }
+
+    if (!workout) {
+      return res.status(200).json({
+        success: true,
+        message: 'No workout scheduled for today',
+        data: null
       });
     }
 
-    const todaysWorkout = todaysSchedule.schedule.find(s => {
-      const scheduleDate = new Date(s.date);
-      const today = new Date();
-      return scheduleDate.toDateString() === today.toDateString();
-    });
-
-    if (!todaysWorkout || !todaysWorkout.workoutId) {
-      return res.status(404).json({
-        success: false,
-        message: 'No workout scheduled for today'
-      });
+    // Get progress and current exercise if methods exist
+    let progress = null;
+    let currentExercise = null;
+    try {
+      if (workout.getProgress) {
+        progress = workout.getProgress();
+      }
+      if (workout.getCurrentExercise) {
+        currentExercise = workout.getCurrentExercise();
+      }
+    } catch (err) {
+      // Methods might not exist, that's okay
+      console.log('Progress methods not available:', err.message);
     }
-
-    const workout = await Workout.findById(todaysWorkout.workoutId);
-    const progress = workout.getProgress();
-    const currentExercise = workout.getCurrentExercise();
 
     res.status(200).json({
       success: true,
-      data: {
-        workout,
-        progress,
-        currentExercise,
-        workoutType: todaysWorkout.workoutType,
-        isCompleted: todaysWorkout.isCompleted
-      }
+      data: workout
     });
   } catch (error) {
     console.error('Get today\'s workout error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to get today\'s workout'
+      message: 'Failed to get today\'s workout',
+      error: error.message
     });
   }
 };
