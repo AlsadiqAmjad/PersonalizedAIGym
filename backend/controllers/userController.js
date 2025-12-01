@@ -20,7 +20,8 @@ const completeOnboarding = async (req, res) => {
       { 
         profile: { ...profile },
         preferences: { ...preferences }
-      }
+      },
+      { new: true }
     );
 
     if (!updatedUser) {
@@ -31,11 +32,12 @@ const completeOnboarding = async (req, res) => {
     }
 
     // Create user object with updated profile for AI generation
-    const user = {
-      ...updatedUser,
-      profile: { ...profile },
-      preferences: { ...preferences }
-    };
+    // const user = {
+    //   ...updatedUser,
+    //   profile: { ...profile },
+    //   preferences: { ...preferences }
+    // };
+    const user = await User.findById(userId);
 
     // Generate AI-powered workout and nutrition plans using PARALLEL PROCESSING
     try {
