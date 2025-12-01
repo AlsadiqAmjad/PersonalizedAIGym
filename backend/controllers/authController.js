@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 // Register new user
 const register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, role } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -16,13 +16,17 @@ const register = async (req, res) => {
       });
     }
 
+    // Determine valid role
+    const allowedRoles = ['user', 'coach', 'admin'];
+    const selectedRole = allowedRoles.includes(role) ? role : 'user';
+
     // Create user without profile (will be completed during onboarding)
     const userData = {
       email,
       password,
       firstName,
       lastName,
-      role: 'user',
+      role: selectedRole,
       isActive: true
     };
 

@@ -1,6 +1,7 @@
 import HomeLayout from "./layouts/HomeLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CoachDashboard from "./pages/coach/CoachDashboard";
+import CoachQuestionary from "./pages/coach/CoachQuestionary";
 import Home from "./pages/home/Home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
@@ -41,6 +42,7 @@ const App = () => {
           <Route path="landingPage" element={<LandingPage />} />
           <Route path="profile" element={<Profile />} />
         </Route>
+        <Route path="/coach/questionary" element={<CoachQuestionary />} />
         <Route path="/coach" element={<CoachDashboard />} />
         <Route path="/admin" element={<AdminDashboard />} />
         {/* <Route path="/admin" element="AdminLayout">
