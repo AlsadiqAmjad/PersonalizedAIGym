@@ -222,6 +222,19 @@ export const adminAPI = {
     return response.json();
   },
 
+  updateUserProfile: async (token, userId, updateData) => {
+    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/profile`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(updateData),
+    });
+    return response.json();
+  },
+
+
   updateUserStatus: async (token, userId, isActive) => {
     const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/status`, {
       method: 'PATCH',
