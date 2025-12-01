@@ -77,6 +77,17 @@ export const authAPI = {
     });
     return response.json();
   },
+  regenerateFullPlan: async (token) => {
+    const response = await fetch(`${API_BASE_URL}/user/regenerate-full-plan`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
+
+    return response.json();
+  },
 };
 
 // User API functions

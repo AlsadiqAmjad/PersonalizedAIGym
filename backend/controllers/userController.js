@@ -577,6 +577,49 @@ const completeOnboarding = async (req, res) => {
   }
 };
 
+// Regenerate both daily workout and daily nutrition in one call
+const regenerateFullPlan = async (req, res) => {
+  // helper to call an existing controller without sending the real response
+  const callHandler = (handler) =>
+    new Promise((resolve, reject) => {
+      const fakeRes = {
+        status(code) {
+          this.statusCode = code;
+          return this;
+        },
+        json(body) {
+          if (this.statusCode && this.statusCode >= 400) {
+            reject(new Error(body.message || 'Handler error'));
+          } else {
+            resolve(body);
+          }
+        },
+      };
+
+      handler(req, fakeRes).catch(reject);
+    });
+
+  try {
+    // reuse your existing daily regeneration logic
+    const workoutResult = await callHandler(regenerateDailyWorkout);
+    const nutritionResult = await callHandler(regenerateDailyNutrition);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Full plan regenerated successfully',
+      workout: workoutResult,
+      nutrition: nutritionResult,
+    });
+  } catch (error) {
+    console.error('Full plan regeneration error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to regenerate full plan',
+      error: error.message,
+    });
+  }
+};
+
 // Get user dashboard data
 const getDashboard = async (req, res) => {
   try {
@@ -2185,6 +2228,7 @@ module.exports = {
   replaceMeal,
   regenerateDailyWorkout,
   regenerateDailyNutrition,
+  regenerateFullPlan,
   getTodaysWorkout,
   getWeeklySchedule,
   completeCurrentExercise,

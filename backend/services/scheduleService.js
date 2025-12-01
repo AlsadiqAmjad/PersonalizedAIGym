@@ -10,7 +10,7 @@ class ScheduleService {
 
     const schedule = [];
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < daysPerWeek; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
       date.setHours(0, 0, 0, 0);
