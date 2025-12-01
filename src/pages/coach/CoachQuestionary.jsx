@@ -8,6 +8,7 @@ const CoachQuestionary = () => {
   const [age, setAge] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
+  const [gender, setGender] = useState("");
   const [speciality, setSpeciality] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ const CoachQuestionary = () => {
     const heightNum = Number(height);
     const weightNum = Number(weight);
 
-    if (!ageNum || !heightNum || !weightNum || !speciality.trim()) {
+    if (!ageNum || !heightNum || !weightNum || !speciality.trim() || !gender) {
       setError("Please fill in all fields with valid values.");
       return;
     }
@@ -43,6 +44,7 @@ const CoachQuestionary = () => {
           age: ageNum,
           height: heightNum,
           weight: weightNum,
+          gender,
         },
         coachProfile: {
           specialization: specializationArray,
@@ -117,6 +119,18 @@ const CoachQuestionary = () => {
                 placeholder="e.g. 75"
                 required
               />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-400 mb-1">Gender</label>
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="px-4 py-2 bg-gray-700 text-gray-100 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required>
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
             </div>
           </div>
 

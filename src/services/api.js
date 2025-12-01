@@ -304,6 +304,18 @@ export const coachAPI = {
     });
     return response.json();
   },
+  getClients: async (token) => {
+    const response = await fetch(`${API_BASE_URL}/coach/clients`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.json();
+  },
+  getClientDetails: async (token, clientId) => {
+    const response = await fetch(`${API_BASE_URL}/coach/clients/${clientId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.json();
+  },
 };
 
 // Utility functions

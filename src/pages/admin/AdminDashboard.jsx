@@ -147,6 +147,7 @@ const AdminDashboard = () => {
 
         updateData.coachProfile = {
           specialization: specializationArray,
+          gender: editForm.gender,
         };
       }
 
@@ -757,22 +758,22 @@ const UserDetailEditView = ({
                   className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
                 />
               </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Gender</span>
+                <select
+                  value={editForm.gender}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, gender: e.target.value })
+                  }
+                  className="w-48 px-2 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
               {user.role === "user" && (
                 <>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Gender</span>
-                    <select
-                      value={editForm.gender}
-                      onChange={(e) =>
-                        setEditForm({ ...editForm, gender: e.target.value })
-                      }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                    </select>
-                  </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400">Fitness Level</span>
                     <select
@@ -783,7 +784,7 @@ const UserDetailEditView = ({
                           fitnessLevel: e.target.value,
                         })
                       }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-2 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
                     >
                       <option value="">Select Fitness Level</option>
                       <option value="beginner">Beginner</option>
@@ -905,7 +906,7 @@ const UserDetailEditView = ({
                     onChange={(e) =>
                       setEditForm({ ...editForm, workoutTime: e.target.value })
                     }
-                    className="ml-2 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                    className="ml-2 px-2 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
                   >
                     <option value="">Select Time</option>
                     <option value="morning">Morning</option>
