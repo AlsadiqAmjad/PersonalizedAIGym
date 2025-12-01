@@ -22,6 +22,9 @@ router.post('/register', authLimiter, validateRegister, authController.register)
 router.post('/login', authLimiter, validateLogin, authController.login);
 router.post('/login-with-role', authLimiter, authController.loginWithRole);
 
+// Public coaches listing (no auth required)
+router.get('/coaches', authController.getPublicCoaches);
+
 // Protected routes
 router.get('/profile', authenticate, authController.getProfile);
 router.put('/profile', authenticate, authController.updateProfile);

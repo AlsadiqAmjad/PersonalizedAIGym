@@ -314,11 +314,43 @@ const logout = async (req, res) => {
   });
 };
 
+// Public: get active coaches for the marketing / home page
+const getPublicCoaches = async (req, res) => {
+  try {
+    const coaches = await User.find({ role: 'coach', isActive: true })
+      .select('firstName lastName coachProfile');
+
+    const data = coaches.map((coach) => ({
+      id: coach._id,
+      Trainer_Name: `${coach.firstName} ${coach.lastName}`,
+      speciality: coach.coachProfile &&
+        Array.isArray(coach.coachProfile.specialization) &&
+        coach.coachProfile.specialization.length > 0
+        ? coach.coachProfile.specialization.join(', ')
+        : 'Personal Training',
+    }));
+
+    res.status(200).json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    console.error('Error fetching public coaches:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching coaches',
+      error: error.message,
+    });
+  }
+};
+
+
 module.exports = {
   register,
   login,
   loginWithRole,
   getProfile,
   updateProfile,
-  logout
+  logout,
+  getPublicCoaches,
 };

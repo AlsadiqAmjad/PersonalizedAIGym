@@ -90,6 +90,14 @@ export const authAPI = {
   },
 };
 
+// Public (unauthenticated) API functions
+export const publicAPI = {
+  getCoaches: async () => {
+    const response = await fetch(`${API_BASE_URL}/auth/coaches`);
+    return response.json();
+  },
+};
+
 // User API functions
 export const userAPI = {
   getDashboard: async (token) => {
