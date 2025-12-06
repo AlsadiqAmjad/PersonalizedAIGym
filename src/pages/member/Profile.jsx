@@ -196,7 +196,7 @@ const Profile = () => {
         <MemberHeader />
         <div className="p-8">
           <div className="max-w-6xl mx-auto">
-            <p className="text-gray-400">Loading profile...</p>
+            <p className="text-muted-foreground">Loading profile...</p>
           </div>
         </div>
       </div>
@@ -232,15 +232,15 @@ const Profile = () => {
               <User className="w-8 h-8" />
               Profile
             </h1>
-            <p className="text-gray-400">Manage your profile and preferences</p>
+            <p className="text-muted-foreground">Manage your profile and preferences</p>
           </div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg p-6 border border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400 mb-1">Current Streak</p>
+                  <p className="text-sm text-muted-foreground mb-1">Current Streak</p>
                   <p className="text-3xl font-bold text-yellow-400 flex items-center gap-2">
                     <Flame className="w-6 h-6" />
                     {streak} days
@@ -248,21 +248,21 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg p-6 border border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400 mb-1">Workout Days</p>
-                  <p className="text-3xl font-bold text-blue-400 flex items-center gap-2">
+                  <p className="text-sm text-muted-foreground mb-1">Workout Days</p>
+                  <p className="text-3xl font-bold text-primary flex items-center gap-2">
                     <Calendar className="w-6 h-6" />
                     {profile.workoutDaysPerWeek}/week
                   </p>
                 </div>
               </div>
             </div>
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg p-6 border border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400 mb-1">Session Length</p>
+                  <p className="text-sm text-muted-foreground mb-1">Session Length</p>
                   <p className="text-3xl font-bold text-green-400 flex items-center gap-2">
                     <Clock className="w-6 h-6" />
                     {profile.sessionLength} min
@@ -274,7 +274,7 @@ const Profile = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {/* Profile Information Card */}
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg p-6 border border-border">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold flex items-center gap-2">
                   <User className="w-5 h-5" />
@@ -294,86 +294,86 @@ const Profile = () => {
               {isEditing ? (
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">First Name</span>
+                    <span className="text-muted-foreground">First Name</span>
                     <input
                       type="text"
                       value={editForm.firstName}
                       onChange={(e) =>
                         setEditForm({ ...editForm, firstName: e.target.value })
                       }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                     />
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Last Name</span>
+                    <span className="text-muted-foreground">Last Name</span>
                     <input
                       type="text"
                       value={editForm.lastName}
                       onChange={(e) =>
                         setEditForm({ ...editForm, lastName: e.target.value })
                       }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                     />
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Email</span>
+                    <span className="text-muted-foreground">Email</span>
                     <input
                       type="email"
                       value={editForm.email}
                       onChange={(e) =>
                         setEditForm({ ...editForm, email: e.target.value })
                       }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                     />
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Age</span>
+                    <span className="text-muted-foreground">Age</span>
                     <input
                       type="number"
                       value={editForm.age}
                       onChange={(e) =>
                         setEditForm({ ...editForm, age: e.target.value })
                       }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                     />
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Weight (kg)</span>
+                    <span className="text-muted-foreground">Weight (kg)</span>
                     <input
                       type="number"
                       value={editForm.weight}
                       onChange={(e) =>
                         setEditForm({ ...editForm, weight: e.target.value })
                       }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                     />
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Height (cm)</span>
+                    <span className="text-muted-foreground">Height (cm)</span>
                     <input
                       type="number"
                       value={editForm.height}
                       onChange={(e) =>
                         setEditForm({ ...editForm, height: e.target.value })
                       }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                     />
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Gender</span>
+                    <span className="text-muted-foreground">Gender</span>
                     <select
                       value={editForm.gender}
                       onChange={(e) =>
                         setEditForm({ ...editForm, gender: e.target.value })
                       }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                     >
                       <option value="male">Male</option>
                       <option value="female">Female</option>
                     </select>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Fitness Level</span>
+                    <span className="text-muted-foreground">Fitness Level</span>
                     <select
                       value={editForm.fitnessLevel}
                       onChange={(e) =>
@@ -382,7 +382,7 @@ const Profile = () => {
                           fitnessLevel: e.target.value,
                         })
                       }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                     >
                       <option value="beginner">Beginner</option>
                       <option value="intermediate">Intermediate</option>
@@ -393,44 +393,44 @@ const Profile = () => {
               ) : (
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Name</span>
-                    <span className="text-gray-100">
+                    <span className="text-muted-foreground">Name</span>
+                    <span className="text-foreground">
                       {profile.firstName} {profile.lastName}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Email</span>
-                    <span className="text-gray-100 flex items-center gap-1">
+                    <span className="text-muted-foreground">Email</span>
+                    <span className="text-foreground flex items-center gap-1">
                       <Mail className="w-3 h-3" />
                       {profile.email}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Age</span>
-                    <span className="text-gray-100">{profile.age} years</span>
+                    <span className="text-muted-foreground">Age</span>
+                    <span className="text-foreground">{profile.age} years</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Weight</span>
-                    <span className="text-gray-100 flex items-center gap-1">
+                    <span className="text-muted-foreground">Weight</span>
+                    <span className="text-foreground flex items-center gap-1">
                       <Weight className="w-3 h-3" />
                       {profile.weight} kg
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Height</span>
-                    <span className="text-gray-100 flex items-center gap-1">
+                    <span className="text-muted-foreground">Height</span>
+                    <span className="text-foreground flex items-center gap-1">
                       <Ruler className="w-3 h-3" />
                       {profile.height} cm
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Gender</span>
-                    <span className="text-gray-100 capitalize">
+                    <span className="text-muted-foreground">Gender</span>
+                    <span className="text-foreground capitalize">
                       {profile.gender}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Fitness Level</span>
+                    <span className="text-muted-foreground">Fitness Level</span>
                     <span className="px-2 py-1 text-xs rounded-full bg-blue-900/30 text-blue-300 capitalize">
                       {profile.fitnessLevel}
                     </span>
@@ -440,7 +440,7 @@ const Profile = () => {
             </div>
 
             {/* Goals & Preferences Card */}
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg p-6 border border-border">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold flex items-center gap-2">
                   <Target className="w-5 h-5" />
@@ -451,7 +451,7 @@ const Profile = () => {
               {isEditing ? (
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-gray-400 mb-2">Goals</p>
+                    <p className="text-sm text-muted-foreground mb-2">Goals</p>
                     <div className="flex flex-wrap gap-2">
                       {availableGoals.map((goal) => (
                         <button
@@ -459,8 +459,8 @@ const Profile = () => {
                           onClick={() => toggleGoal(goal)}
                           className={`px-2 py-1 text-xs rounded-full capitalize transition-colors ${
                             editForm.goals?.includes(goal)
-                              ? "bg-purple-900/30 text-purple-300 border border-purple-500"
-                              : "bg-gray-700 text-gray-400 hover:bg-gray-600"
+                              ? "bg-purple-900/30 text-primary border border-purple-500"
+                              : "bg-muted text-muted-foreground hover:bg-secondary"
                           }`}
                         >
                           {goal.replace("-", " ")}
@@ -469,7 +469,7 @@ const Profile = () => {
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400 mb-2">Equipment</p>
+                    <p className="text-sm text-muted-foreground mb-2">Equipment</p>
                     <div className="flex flex-wrap gap-2">
                       {availableEquipment.map((eq) => (
                         <button
@@ -477,8 +477,8 @@ const Profile = () => {
                           onClick={() => toggleEquipment(eq)}
                           className={`px-2 py-1 text-xs rounded-full capitalize transition-colors ${
                             editForm.availableEquipment?.includes(eq)
-                              ? "bg-gray-600 text-gray-200 border border-gray-500"
-                              : "bg-gray-700 text-gray-400 hover:bg-gray-600"
+                              ? "bg-secondary text-foreground border border-border"
+                              : "bg-muted text-muted-foreground hover:bg-secondary"
                           }`}
                         >
                           {eq.replace("-", " ")}
@@ -487,13 +487,13 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="text-sm">
-                    <span className="text-gray-400">Workout Time: </span>
+                    <span className="text-muted-foreground">Workout Time: </span>
                     <select
                       value={editForm.workoutTime}
                       onChange={(e) =>
                         setEditForm({ ...editForm, workoutTime: e.target.value })
                       }
-                      className="ml-2 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="ml-2 px-3 py-1 bg-muted text-foreground rounded border border-border"
                     >
                       <option value="morning">Morning</option>
                       <option value="afternoon">Afternoon</option>
@@ -504,12 +504,12 @@ const Profile = () => {
               ) : (
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm text-gray-400 mb-2">Goals</p>
+                    <p className="text-sm text-muted-foreground mb-2">Goals</p>
                     <div className="flex flex-wrap gap-2">
                       {profile.goals.map((goal) => (
                         <span
                           key={goal}
-                          className="px-2 py-1 text-xs rounded-full bg-purple-900/30 text-purple-300 capitalize"
+                          className="px-2 py-1 text-xs rounded-full bg-purple-900/30 text-primary capitalize"
                         >
                           {goal.replace("-", " ")}
                         </span>
@@ -517,12 +517,12 @@ const Profile = () => {
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400 mb-2">Equipment</p>
+                    <p className="text-sm text-muted-foreground mb-2">Equipment</p>
                     <div className="flex flex-wrap gap-2">
                       {profile.availableEquipment.map((eq) => (
                         <span
                           key={eq}
-                          className="px-2 py-1 text-xs rounded-full bg-gray-700 text-gray-300 capitalize"
+                          className="px-2 py-1 text-xs rounded-full bg-muted text-muted-foreground capitalize"
                         >
                           {eq.replace("-", " ")}
                         </span>
@@ -530,8 +530,8 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="text-sm">
-                    <span className="text-gray-400">Workout Time: </span>
-                    <span className="text-gray-100 capitalize">
+                    <span className="text-muted-foreground">Workout Time: </span>
+                    <span className="text-foreground capitalize">
                       {profile.workoutTime}
                     </span>
                   </div>
@@ -549,7 +549,7 @@ const Profile = () => {
 
           {/* Action Buttons */}
           {isEditing && (
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg p-6 border border-border">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Settings className="w-5 h-5" />
                 Actions
@@ -566,7 +566,7 @@ const Profile = () => {
                 <button
                   onClick={handleCancel}
                   disabled={saving}
-                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-800 disabled:cursor-not-allowed text-white rounded-lg text-sm flex items-center gap-2 transition-colors"
+                  className="px-4 py-2 bg-secondary hover:bg-muted disabled:bg-card disabled:cursor-not-allowed text-white rounded-lg text-sm flex items-center gap-2 transition-colors"
                 >
                   <X className="w-4 h-4" />
                   Cancel

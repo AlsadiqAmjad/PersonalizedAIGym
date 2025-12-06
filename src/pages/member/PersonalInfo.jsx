@@ -59,22 +59,22 @@ const PersonalInfo = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
+    <div className="min-h-screen bg-background text-foreground p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
             <User className="w-8 h-8" />
             Personal Info
           </h1>
-          <p className="text-gray-400">Tell us about yourself</p>
+          <p className="text-muted-foreground">Tell us about yourself</p>
         </div>
 
-        <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+        <div className="bg-card rounded-lg shadow-lg p-6 border border-border">
           <form onSubmit={handlePersonalInfo} className="flex flex-col gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Age */}
               <div className="flex flex-col">
-                <label htmlFor="age" className="text-sm text-gray-400 mb-1">
+                <label htmlFor="age" className="text-sm text-muted-foreground mb-1">
                   Age
                 </label>
                 <input
@@ -83,21 +83,21 @@ const PersonalInfo = () => {
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
                   placeholder="Enter your age"
-                  className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                   required
                 />
               </div>
 
               {/* Gender */}
               <div className="flex flex-col">
-                <label htmlFor="gender" className="text-sm text-gray-400 mb-1">
+                <label htmlFor="gender" className="text-sm text-muted-foreground mb-1">
                   Gender
                 </label>
                 <select
                   id="gender"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                   required
                 >
                   <option value="">Select your gender</option>
@@ -108,7 +108,7 @@ const PersonalInfo = () => {
 
               {/* Height */}
               <div className="flex flex-col">
-                <label htmlFor="height" className="text-sm text-gray-400 mb-1">
+                <label htmlFor="height" className="text-sm text-muted-foreground mb-1">
                   Height (cm)
                 </label>
                 <input
@@ -117,14 +117,14 @@ const PersonalInfo = () => {
                   value={height}
                   onChange={(e) => setHeight(e.target.value)}
                   placeholder="Enter your height"
-                  className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                   required
                 />
               </div>
 
               {/* Weight */}
               <div className="flex flex-col">
-                <label htmlFor="weight" className="text-sm text-gray-400 mb-1">
+                <label htmlFor="weight" className="text-sm text-muted-foreground mb-1">
                   Weight (kg)
                 </label>
                 <input
@@ -133,18 +133,18 @@ const PersonalInfo = () => {
                   value={weight}
                   onChange={(e) => setWeight(e.target.value)}
                   placeholder="Enter your weight"
-                  className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                   required
                 />
               </div>
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-4 border-t border-gray-700">
+            <div className="flex justify-between items-center pt-4 border-t border-border">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-secondary hover:bg-muted text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Previous

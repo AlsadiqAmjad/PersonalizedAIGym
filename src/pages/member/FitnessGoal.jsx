@@ -186,21 +186,21 @@ const FitnessGoal = () => {
   const canContinue = !!selectedGoal && !!selectedLevel;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
+    <div className="min-h-screen bg-background text-foreground p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
             <Target className="w-8 h-8" />
             {isEditMode ? "Edit Fitness Goals" : "Fitness Goals"}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isEditMode
               ? "Update your fitness goals and level. This will influence your future plans."
               : "Tell us about your fitness objectives."}
           </p>
         </div>
 
-        <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700 space-y-6">
+        <div className="bg-card rounded-lg shadow-lg p-6 border border-border space-y-6">
           {/* Fitness Goal Section */}
           <div>
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -215,7 +215,7 @@ const FitnessGoal = () => {
                   className={`p-3 cursor-pointer transition rounded-lg border ${
                     selectedGoal === goal
                       ? "bg-blue-600 border-blue-500 text-white"
-                      : "bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-650"
+                      : "bg-muted border-border text-muted-foreground hover:bg-secondary"
                   }`}
                 >
                   {goal}
@@ -238,7 +238,7 @@ const FitnessGoal = () => {
                   className={`p-3 cursor-pointer transition rounded-lg border ${
                     selectedLevel === level
                       ? "bg-blue-600 border-blue-500 text-white"
-                      : "bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-650"
+                      : "bg-muted border-border text-muted-foreground hover:bg-secondary"
                   }`}
                 >
                   {level}
@@ -254,12 +254,12 @@ const FitnessGoal = () => {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between pt-4 border-t border-gray-700">
+          <div className="flex justify-between pt-4 border-t border-border">
             <button
               onClick={() =>
                 isEditMode ? navigate("/member/landingPage") : navigate("/member/questionary")
               }
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold flex items-center gap-2"
+              className="px-4 py-2 bg-muted hover:bg-secondary rounded-lg font-semibold flex items-center gap-2"
             >
               <ChevronLeft className="w-4 h-4" />
               {isEditMode ? "Cancel" : "Previous"}
@@ -271,7 +271,7 @@ const FitnessGoal = () => {
               className={`px-4 py-2 rounded-lg font-semibold flex items-center gap-2 ${
                 canContinue && !loading
                   ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-gray-600 cursor-not-allowed"
+                  : "bg-secondary cursor-not-allowed"
               }`}
             >
               {isEditMode ? (loading ? "Saving..." : "Save changes") : "Next"}

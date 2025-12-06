@@ -91,6 +91,12 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  select,
+  option {
+    background-color: hsl(var(--popover));
+    color: hsl(var(--popover-foreground));
+  }
+
   .container {
     @apply max-w-6xl mx-auto px-4;
   }

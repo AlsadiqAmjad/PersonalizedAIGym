@@ -87,7 +87,7 @@ const CoachDashboard = () => {
         <DashboardHeader />
         <div className="p-8 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-gray-400">Loading dashboard...</p>
+            <p className="text-muted-foreground">Loading dashboard...</p>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@ const CoachDashboard = () => {
         <div className="p-8 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-2">Error</h1>
-            <p className="text-gray-400">{error}</p>
+            <p className="text-muted-foreground">{error}</p>
           </div>
         </div>
       </div>
@@ -115,7 +115,7 @@ const CoachDashboard = () => {
         <div className="p-8 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-2">Not Authenticated</h1>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               Please sign in to access the coach dashboard.
             </p>
           </div>
@@ -149,13 +149,13 @@ const CoachDashboard = () => {
 
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Coach Dashboard</h1>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               Welcome back, {coach.firstName} {coach.lastName}
             </p>
           </div>
 
-          <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-700">
+          <div className="bg-card rounded-lg shadow-lg overflow-hidden">
+            <div className="px-6 py-4 border-b border-border">
               <h2 className="text-xl font-semibold flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 Clients ({clients.length})
@@ -163,36 +163,36 @@ const CoachDashboard = () => {
             </div>
 
             {clientLoading && (
-              <div className="px-6 py-2 text-sm text-gray-400">
+              <div className="px-6 py-2 text-sm text-muted-foreground">
                 Loading client details...
               </div>
             )}
 
             {clients.length === 0 ? (
-              <div className="p-8 text-center text-gray-400">
+              <div className="p-8 text-center text-muted-foreground">
                 No clients assigned yet.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-750 border-b border-gray-700">
+                  <thead className="bg-muted border-b border-border">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Client
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Fitness Level
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Goals
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Active Plans
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Workouts
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Status
                       </th>
                     </tr>
@@ -220,15 +220,15 @@ const CoachDashboard = () => {
                         <tr
                           key={client._id}
                           onClick={() => handleClientClick(clientData)}
-                          className="hover:bg-gray-750 cursor-pointer transition-colors"
+                          className="hover:bg-muted cursor-pointer transition-colors"
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                               <div>
-                                <div className="text-sm font-medium text-gray-100">
+                                <div className="text-sm font-medium text-foreground">
                                   {client.firstName} {client.lastName}
                                 </div>
-                                <div className="text-sm text-gray-400 flex items-center gap-1">
+                                <div className="text-sm text-muted-foreground flex items-center gap-1">
                                   <Mail className="w-3 h-3" />
                                   {client.email}
                                 </div>
@@ -247,26 +247,26 @@ const CoachDashboard = () => {
                                 .map((goal) => (
                                   <span
                                     key={goal}
-                                    className="px-2 py-1 text-xs rounded-full bg-purple-900/30 text-purple-300 capitalize"
+                                    className="px-2 py-1 text-xs rounded-full bg-purple-900/30 text-primary capitalize"
                                   >
                                     {goal.replace("-", " ")}
                                   </span>
                                 ))}
                               {(client.profile?.goals || []).length > 2 && (
-                                <span className="px-2 py-1 text-xs text-gray-400">
+                                <span className="px-2 py-1 text-xs text-muted-foreground">
                                   +
                                   {(client.profile?.goals || []).length - 2}
                                 </span>
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             <div className="flex items-center gap-1">
                               <UtensilsCrossed className="w-4 h-4" />
                               {activePlans} active
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             <div className="flex items-center gap-1">
                               <Activity className="w-4 h-4" />
                               {completedWorkouts}/{totalWorkouts}
@@ -276,8 +276,8 @@ const CoachDashboard = () => {
                             <span
                               className={`px-2 py-1 text-xs font-medium rounded-full ${
                                 client.isActive
-                                  ? "bg-green-900/30 text-green-300"
-                                  : "bg-gray-700 text-gray-400"
+                                  ? "bg-green-900/30 text-accent"
+                                  : "bg-muted text-muted-foreground"
                               }`}
                             >
                               {client.isActive ? "Active" : "Inactive"}
@@ -347,7 +347,7 @@ const ClientDetailView = ({ client, onBack }) => {
         <div className="max-w-6xl mx-auto">
           <button
             onClick={onBack}
-            className="mb-6 flex items-center gap-2 text-gray-400 hover:text-gray-100 transition-colors"
+            className="mb-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
             Back to Clients
@@ -357,7 +357,7 @@ const ClientDetailView = ({ client, onBack }) => {
             <h1 className="text-3xl font-bold mb-2">
               {clientUser.firstName} {clientUser.lastName}
             </h1>
-            <p className="text-gray-400 flex items-center gap-2">
+            <p className="text-muted-foreground flex items-center gap-2">
               <Mail className="w-4 h-4" />
               {clientUser.email}
             </p>
@@ -365,38 +365,38 @@ const ClientDetailView = ({ client, onBack }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {/* Profile Card */}
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg p-6 border border-border">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 Profile
               </h2>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Age</span>
-                  <span className="text-gray-100">
+                  <span className="text-muted-foreground">Age</span>
+                  <span className="text-foreground">
                     {clientUser.profile?.age || "N/A"} years
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Weight</span>
-                  <span className="text-gray-100">
+                  <span className="text-muted-foreground">Weight</span>
+                  <span className="text-foreground">
                     {clientUser.profile?.weight || "N/A"} kg
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Height</span>
-                  <span className="text-gray-100">
+                  <span className="text-muted-foreground">Height</span>
+                  <span className="text-foreground">
                     {clientUser.profile?.height || "N/A"} cm
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Gender</span>
-                  <span className="text-gray-100 capitalize">
+                  <span className="text-muted-foreground">Gender</span>
+                  <span className="text-foreground capitalize">
                     {clientUser.profile?.gender || "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Fitness Level</span>
+                  <span className="text-muted-foreground">Fitness Level</span>
                   <span className="px-2 py-1 text-xs rounded-full bg-blue-900/30 text-blue-300 capitalize">
                     {clientUser.profile?.fitnessLevel || "N/A"}
                   </span>
@@ -405,19 +405,19 @@ const ClientDetailView = ({ client, onBack }) => {
             </div>
 
             {/* Goals & Preferences */}
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg p-6 border border-border">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Target className="w-5 h-5" />
                 Goals & Preferences
               </h2>
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-400 mb-2">Goals</p>
+                  <p className="text-sm text-muted-foreground mb-2">Goals</p>
                   <div className="flex flex-wrap gap-2">
                     {(clientUser.profile?.goals || []).map((goal) => (
                       <span
                         key={goal}
-                        className="px-2 py-1 text-xs rounded-full bg-purple-900/30 text-purple-300 capitalize"
+                        className="px-2 py-1 text-xs rounded-full bg-purple-900/30 text-primary capitalize"
                       >
                         {goal.replace("-", " ")}
                       </span>
@@ -425,13 +425,13 @@ const ClientDetailView = ({ client, onBack }) => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400 mb-2">Equipment</p>
+                  <p className="text-sm text-muted-foreground mb-2">Equipment</p>
                   <div className="flex flex-wrap gap-2">
                     {(clientUser.profile?.availableEquipment || []).map(
                       (eq) => (
                         <span
                           key={eq}
-                          className="px-2 py-1 text-xs rounded-full bg-gray-700 text-gray-300 capitalize"
+                          className="px-2 py-1 text-xs rounded-full bg-muted text-muted-foreground capitalize"
                         >
                           {eq.replace("-", " ")}
                         </span>
@@ -440,8 +440,8 @@ const ClientDetailView = ({ client, onBack }) => {
                   </div>
                 </div>
                 <div className="text-sm">
-                  <span className="text-gray-400">Workout Time: </span>
-                  <span className="text-gray-100 capitalize">
+                  <span className="text-muted-foreground">Workout Time: </span>
+                  <span className="text-foreground capitalize">
                     {clientUser.preferences?.workoutTime || "N/A"}
                   </span>
                 </div>
@@ -451,7 +451,7 @@ const ClientDetailView = ({ client, onBack }) => {
 
           {/* Nutrition Plan */}
           {activePlan && (
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 mb-6">
+            <div className="bg-card rounded-lg p-6 border border-border mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold flex items-center gap-2">
                   <UtensilsCrossed className="w-5 h-5" />
@@ -460,39 +460,39 @@ const ClientDetailView = ({ client, onBack }) => {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <p className="text-sm text-gray-400">Daily Calories</p>
+                  <p className="text-sm text-muted-foreground">Daily Calories</p>
                   <p className="text-lg font-semibold">
                     {activePlan.dailyCalorieTarget}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Protein</p>
+                  <p className="text-sm text-muted-foreground">Protein</p>
                   <p className="text-lg font-semibold">
                     {activePlan.macroTargets.protein}g
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Carbs</p>
+                  <p className="text-sm text-muted-foreground">Carbs</p>
                   <p className="text-lg font-semibold">
                     {activePlan.macroTargets.carbs}g
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Fat</p>
+                  <p className="text-sm text-muted-foreground">Fat</p>
                   <p className="text-lg font-semibold">
                     {activePlan.macroTargets.fat}g
                   </p>
                 </div>
               </div>
               <div className="mt-4">
-                <p className="text-sm text-gray-400 mb-2">
+                <p className="text-sm text-muted-foreground mb-2">
                   Meals ({(clientData.meals || []).length})
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {(clientData.meals || []).map((meal) => (
                     <span
                       key={meal._id}
-                      className="px-3 py-1 text-sm rounded-lg bg-gray-700 text-gray-300 capitalize"
+                      className="px-3 py-1 text-sm rounded-lg bg-muted text-muted-foreground capitalize"
                     >
                       {meal.name}
                     </span>
@@ -503,7 +503,7 @@ const ClientDetailView = ({ client, onBack }) => {
           )}
 
           {/* Workouts */}
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 mb-6">
+          <div className="bg-card rounded-lg p-6 border border-border mb-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold flex items-center gap-2">
                 <Activity className="w-5 h-5" />
@@ -511,19 +511,19 @@ const ClientDetailView = ({ client, onBack }) => {
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div className="bg-gray-700/50 rounded-lg p-4">
-                <p className="text-sm text-gray-400">Total Workouts</p>
+              <div className="bg-muted rounded-lg p-4">
+                <p className="text-sm text-muted-foreground">Total Workouts</p>
                 <p className="text-2xl font-bold">{workouts.length}</p>
               </div>
-              <div className="bg-gray-700/50 rounded-lg p-4">
-                <p className="text-sm text-gray-400">Completed</p>
+              <div className="bg-muted rounded-lg p-4">
+                <p className="text-sm text-muted-foreground">Completed</p>
                 <p className="text-2xl font-bold text-green-400">
                   {completedWorkouts.length}
                 </p>
               </div>
-              <div className="bg-gray-700/50 rounded-lg p-4">
-                <p className="text-sm text-gray-400">Upcoming</p>
-                <p className="text-2xl font-bold text-blue-400">
+              <div className="bg-muted rounded-lg p-4">
+                <p className="text-sm text-muted-foreground">Upcoming</p>
+                <p className="text-2xl font-bold text-primary">
                   {upcomingWorkouts.length}
                 </p>
               </div>
@@ -532,11 +532,11 @@ const ClientDetailView = ({ client, onBack }) => {
               {workouts.slice(0, 5).map((workout) => (
                 <div
                   key={workout._id}
-                  className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-muted/80 rounded-lg"
                 >
                   <div>
                     <p className="font-medium">{getWorkoutTitle(workout)}</p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                       {getWorkoutSubtitle(workout)}
                     </p>
                   </div>
@@ -544,8 +544,8 @@ const ClientDetailView = ({ client, onBack }) => {
                     <span
                       className={`px-2 py-1 text-xs rounded-full ${
                         workout.isCompleted
-                          ? "bg-green-900/30 text-green-300"
-                          : "bg-gray-700 text-gray-400"
+                          ? "bg-green-900/30 text-accent"
+                          : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {workout.isCompleted ? "Completed" : "Pending"}

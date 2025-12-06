@@ -67,17 +67,17 @@ const Login = () => {
             <LogIn className="w-8 h-8" />
             Login
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             Welcome back! Please sign in to your account
           </p>
         </div>
 
-        <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+        <div className="bg-card rounded-lg shadow-lg p-6 border border-border">
           <form className="flex flex-col gap-4" onSubmit={handleLogin}>
             <div className="flex flex-col">
               <label
                 htmlFor="email"
-                className="text-sm text-gray-400 mb-1 flex items-center gap-1"
+                className="text-sm text-muted-foreground mb-1 flex items-center gap-1"
               >
                 <Mail className="w-4 h-4" />
                 Email
@@ -88,7 +88,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                 required
               />
             </div>
@@ -96,7 +96,7 @@ const Login = () => {
             <div className="flex flex-col">
               <label
                 htmlFor="password"
-                className="text-sm text-gray-400 mb-1 flex items-center gap-1"
+                className="text-sm text-muted-foreground mb-1 flex items-center gap-1"
               >
                 <Lock className="w-4 h-4" />
                 Password
@@ -107,10 +107,10 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                 required
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Demo: Use "password123" for test accounts
               </p>
             </div>

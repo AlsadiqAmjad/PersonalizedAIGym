@@ -96,7 +96,7 @@ const MemberHeader = () => {
 
             {/* Mobile Menu Dropdown */}
             {open && (
-              <div className="md:hidden absolute top-full left-0 right-0 bg-gray-800 border-t border-gray-700 shadow-lg z-50">
+              <div className="md:hidden absolute top-full left-0 right-0 bg-card border-t border-border shadow-lg z-50">
                 <ul className="flex flex-col">
                   {memberHeader.map((el) => (
                     <li key={el.id}>
@@ -106,7 +106,7 @@ const MemberHeader = () => {
                             handleLogout();
                             setOpen(false);
                           }}
-                          className="block w-full text-left px-6 py-3 text-gray-300 bg-transparent border-0 outline-none"
+                          className="block w-full text-left px-6 py-3 text-muted-foreground bg-transparent border-0 outline-none"
                         >
                           {el.title}
                         </button>
@@ -116,14 +116,14 @@ const MemberHeader = () => {
                             navigate("/member/landingPage");
                             setOpen(false);
                           }}
-                          className="block w-full text-left px-6 py-3 text-gray-300 bg-transparent border-0 outline-none"
+                          className="block w-full text-left px-6 py-3 text-muted-foreground bg-transparent border-0 outline-none"
                         >
                           {el.title}
                         </button>
                       ) : (
                         <Link
                           to={el.to}
-                          className="block w-full px-6 py-3 text-gray-300 no-underline"
+                          className="block w-full px-6 py-3 text-muted-foreground no-underline"
                           onClick={() => setOpen(false)}
                         >
                           {el.title}

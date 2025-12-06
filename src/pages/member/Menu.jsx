@@ -26,7 +26,7 @@ const Menu = () => {
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-lg p-4 border border-gray-700">
+    <div className="bg-card rounded-lg shadow-lg p-4 border border-border">
       <div className="flex justify-around gap-2">
         {menus.map((menu) => {
           const Icon = menu.icon;
@@ -37,7 +37,7 @@ const Menu = () => {
               className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-all font-semibold text-sm ${
                 active === menu.name
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-650"
+                  : "bg-muted text-muted-foreground hover:bg-secondary"
               }`}
             >
               <Icon className="w-4 h-4" />

@@ -166,7 +166,7 @@ const LandingPage = () => {
         <MemberHeader />
         <div className="p-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-gray-400">Loading...</p>
+            <p className="text-muted-foreground">Loading...</p>
           </div>
         </div>
       </div>
@@ -190,7 +190,7 @@ const LandingPage = () => {
               <Activity className="w-8 h-8" />
               Welcome back, {username}!
             </h1>
-            <p className="text-gray-400 text-lg">
+            <p className="text-muted-foreground text-lg">
               Ready to crush today's workout? You are on{" "}
               <span className="inline-flex items-center gap-1 text-yellow-400 font-bold">
                 <Flame className="w-5 h-5" />
@@ -201,7 +201,7 @@ const LandingPage = () => {
           </div>
 
           {/* Stats Card */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700 mb-6">
+          <div className="bg-card rounded-lg shadow-lg p-6 border border-border mb-6">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
@@ -227,7 +227,7 @@ const LandingPage = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Today's Workout Card */}
-            <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg shadow-lg p-6 border border-border">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold flex items-center gap-2">
                   <Calendar className="w-6 h-6" />
@@ -237,15 +237,15 @@ const LandingPage = () => {
 
               {todaysWorkout ? (
                 <div className="mb-4">
-                  <p className="text-sm text-gray-400 mb-2">
+                  <p className="text-sm text-muted-foreground mb-2">
                     {todaysWorkout.name} • {todaysWorkout.duration} min
                   </p>
                   {todaysWorkout.description && (
-                    <p className="text-sm text-gray-300 mb-4">{todaysWorkout.description}</p>
+                    <p className="text-sm text-muted-foreground mb-4">{todaysWorkout.description}</p>
                   )}
                 </div>
               ) : (
-                <p className="text-gray-400 mb-4">No workout scheduled for today. Complete onboarding to get your personalized plan!</p>
+                <p className="text-muted-foreground mb-4">No workout scheduled for today. Complete onboarding to get your personalized plan!</p>
               )}
               <div className="space-y-3">
                 {workoutPlan.map((item, index) => (
@@ -256,7 +256,7 @@ const LandingPage = () => {
                         ? "bg-green-900/20 border-green-700/50"
                         : item.type === "cooldown"
                         ? "bg-purple-900/20 border-purple-700/50"
-                        : "bg-gray-700/50 border-gray-600 hover:bg-gray-700"
+                        : "bg-muted border-border hover:bg-muted"
                     }`}
                   >
                     <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
@@ -269,10 +269,10 @@ const LandingPage = () => {
                       {index + 1}
                     </div>
                     <div className="flex-1">
-                      <span className="font-semibold text-blue-400">
+                      <span className="font-semibold text-primary">
                         {item.phase}:
                       </span>{" "}
-                      <span className="text-gray-300">{item.exercise}</span>
+                      <span className="text-muted-foreground">{item.exercise}</span>
                     </div>
                   </div>
                 ))}
@@ -280,7 +280,7 @@ const LandingPage = () => {
             </div>
 
             {/* Nutrition Plan Card */}
-            <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg shadow-lg p-6 border border-border">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold flex items-center gap-2">
                   <Activity className="w-6 h-6" />
@@ -292,55 +292,55 @@ const LandingPage = () => {
                 <>
                   <div className="mb-4">
                     <div className="grid grid-cols-3 gap-4 mb-4">
-                      <div className="bg-gray-700/50 rounded-lg p-3">
-                        <p className="text-xs text-gray-400 mb-1">Calories</p>
+                      <div className="bg-muted rounded-lg p-3">
+                        <p className="text-xs text-muted-foreground mb-1">Calories</p>
                         <p className="text-lg font-bold text-yellow-400">{nutritionPlan.dailyCalorieTarget}</p>
                       </div>
-                      <div className="bg-gray-700/50 rounded-lg p-3">
-                        <p className="text-xs text-gray-400 mb-1">Protein</p>
-                        <p className="text-lg font-bold text-blue-400">{nutritionPlan.macroTargets?.protein || 0}g</p>
+                      <div className="bg-muted rounded-lg p-3">
+                        <p className="text-xs text-muted-foreground mb-1">Protein</p>
+                        <p className="text-lg font-bold text-primary">{nutritionPlan.macroTargets?.protein || 0}g</p>
                       </div>
-                      <div className="bg-gray-700/50 rounded-lg p-3">
-                        <p className="text-xs text-gray-400 mb-1">Carbs</p>
+                      <div className="bg-muted rounded-lg p-3">
+                        <p className="text-xs text-muted-foreground mb-1">Carbs</p>
                         <p className="text-lg font-bold text-green-400">{nutritionPlan.macroTargets?.carbs || 0}g</p>
                       </div>
                     </div>
                     <div className="mb-4">
-                      <p className="text-xs text-gray-400 mb-2">Fat</p>
+                      <p className="text-xs text-muted-foreground mb-2">Fat</p>
                       <p className="text-lg font-bold text-purple-400">{nutritionPlan.macroTargets?.fat || 0}g</p>
                     </div>
                   </div>
                   
                   {nutritionPlan.meals && nutritionPlan.meals.length > 0 ? (
                     <div className="space-y-3">
-                      <h3 className="text-sm font-semibold text-gray-300 mb-2">Meals ({nutritionPlan.meals.length})</h3>
+                      <h3 className="text-sm font-semibold text-muted-foreground mb-2">Meals ({nutritionPlan.meals.length})</h3>
                       {nutritionPlan.meals.map((meal, index) => (
                         <div
                           key={meal._id || index}
-                          className="bg-gray-700/50 rounded-lg p-3 border border-gray-600"
+                          className="bg-muted rounded-lg p-3 border border-border"
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <p className="font-semibold text-blue-400 capitalize">{meal.name}</p>
-                              <p className="text-xs text-gray-400 capitalize">{meal.mealType}</p>
+                              <p className="font-semibold text-primary capitalize">{meal.name}</p>
+                              <p className="text-xs text-muted-foreground capitalize">{meal.mealType}</p>
                             </div>
                             <div className="text-right">
                               <p className="text-sm font-bold text-yellow-400">{meal.calories} cal</p>
-                              <p className="text-xs text-gray-400">{meal.protein}g P • {meal.carbs}g C • {meal.fat}g F</p>
+                              <p className="text-xs text-muted-foreground">{meal.protein}g P • {meal.carbs}g C • {meal.fat}g F</p>
                             </div>
                           </div>
                           {meal.description && (
-                            <p className="text-xs text-gray-300 mt-2">{meal.description}</p>
+                            <p className="text-xs text-muted-foreground mt-2">{meal.description}</p>
                           )}
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-400">No meals planned yet</p>
+                    <p className="text-muted-foreground">No meals planned yet</p>
                   )}
                 </>
               ) : (
-                <p className="text-gray-400">No nutrition plan available. Complete onboarding to get your personalized meal plan!</p>
+                <p className="text-muted-foreground">No nutrition plan available. Complete onboarding to get your personalized meal plan!</p>
               )}
             </div>
           </div>

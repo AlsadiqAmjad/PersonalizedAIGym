@@ -164,21 +164,21 @@ const Schedule = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
+    <div className="min-h-screen bg-background text-foreground p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
             <Calendar className="w-8 h-8" />
             {isEditMode ? "Edit Workout Schedule" : "Workout Schedule"}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isEditMode
               ? "Adjust how often you train and how your week is structured."
               : "Customize your workout routine."}
           </p>
         </div>
 
-        <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700 space-y-6">
+        <div className="bg-card rounded-lg shadow-lg p-6 border border-border space-y-6">
           {/* Question 1 — days per week */}
           <div>
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -188,7 +188,7 @@ const Schedule = () => {
             <select
               value={daysPerWeek || ""}
               onChange={(e) => setDaysPerWeek(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+              className="w-full px-4 py-2 bg-muted text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
             >
               <option value="" disabled>
                 Select days per week
@@ -215,7 +215,7 @@ const Schedule = () => {
                   className={`p-3 cursor-pointer transition rounded-lg border ${
                     sessionLength === option
                       ? "bg-blue-600 border-blue-500 text-white"
-                      : "bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-650"
+                      : "bg-muted border-border text-muted-foreground hover:bg-secondary"
                   }`}
                 >
                   {option}
@@ -238,7 +238,7 @@ const Schedule = () => {
                   className={`p-3 cursor-pointer transition rounded-lg border ${
                     workoutSplit === split
                       ? "bg-blue-600 border-blue-500 text-white"
-                      : "bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-650"
+                      : "bg-muted border-border text-muted-foreground hover:bg-secondary"
                   }`}
                 >
                   {split}
@@ -254,12 +254,12 @@ const Schedule = () => {
           )}
 
           {/* Navigation Buttons */}
-          {/* <div className="flex justify-between pt-4 border-t border-gray-700">
+          {/* <div className="flex justify-between pt-4 border-t border-border">
             <button
               onClick={() =>
                 isEditMode ? navigate("/member") : navigate("/member/fitnessGoal")
               }
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold flex items-center gap-2"
+              className="px-4 py-2 bg-muted hover:bg-secondary rounded-lg font-semibold flex items-center gap-2"
             >
               <ChevronLeft className="w-4 h-4" />
               {isEditMode ? "Cancel" : "Previous"}
@@ -271,7 +271,7 @@ const Schedule = () => {
               className={`px-4 py-2 rounded-lg font-semibold flex items-center gap-2 ${
                 canContinue && !loading
                   ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-gray-600 cursor-not-allowed"
+                  : "bg-secondary cursor-not-allowed"
               }`}
             >
               {isEditMode ? (loading ? "Saving..." : "Save changes") : "Next"}
@@ -279,12 +279,12 @@ const Schedule = () => {
             </button>
           </div> */}
           {/* Button block */}
-          <div className="flex justify-between pt-4 border-t border-gray-700">
+          <div className="flex justify-between pt-4 border-t border-border">
             <button
               onClick={() =>
                 isEditMode ? navigate("/member/landingPage") : navigate("/member/fitnessGoal")
               }
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold flex items-center gap-2"
+              className="px-4 py-2 bg-muted hover:bg-secondary rounded-lg font-semibold flex items-center gap-2"
             >
               <ChevronLeft className="w-4 h-4" />
               {isEditMode ? "Cancel" : "Previous"}
@@ -302,7 +302,7 @@ const Schedule = () => {
               className={`px-4 py-2 rounded-lg font-semibold flex items-center gap-2 ${
                 canContinue && !loading
                   ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-gray-600 cursor-not-allowed"
+                  : "bg-secondary cursor-not-allowed"
               }`}
             >
               {isEditMode ? "Save changes" : "Next"}

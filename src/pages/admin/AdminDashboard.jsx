@@ -301,7 +301,7 @@ const AdminDashboard = () => {
         <DashboardHeader />
         <div className="p-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-gray-400">Loading...</p>
+            <p className="text-muted-foreground">Loading...</p>
           </div>
         </div>
       </div>
@@ -324,7 +324,7 @@ const AdminDashboard = () => {
               <Shield className="w-8 h-8" />
               Admin Dashboard
             </h1>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               {adminUser
                 ? `Welcome back, ${adminUser.firstName} ${adminUser.lastName}. Manage users, coaches, and assignments.`
                 : "Manage users, coaches, and assignments"}
@@ -332,8 +332,8 @@ const AdminDashboard = () => {
           </div>
 
           {/* Clients Table */}
-          <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-8">
-            <div className="px-6 py-4 border-b border-gray-700">
+          <div className="bg-card rounded-lg shadow-lg overflow-hidden mb-8">
+            <div className="px-6 py-4 border-b border-border">
               <h2 className="text-xl font-semibold flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 Clients ({clients.length})
@@ -341,27 +341,27 @@ const AdminDashboard = () => {
             </div>
 
             {clients.length === 0 ? (
-              <div className="p-8 text-center text-gray-400">
+              <div className="p-8 text-center text-muted-foreground">
                 No clients found.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-750 border-b border-gray-700">
+                  <thead className="bg-muted border-b border-border">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Client
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Profile Info
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Assigned Coach
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
@@ -373,14 +373,14 @@ const AdminDashboard = () => {
                       return (
                         <tr
                           key={client._id}
-                          className="hover:bg-gray-750 transition-colors"
+                          className="hover:bg-muted transition-colors"
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
-                              <div className="text-sm font-medium text-gray-100">
+                              <div className="text-sm font-medium text-foreground">
                                 {client.firstName} {client.lastName}
                               </div>
-                              <div className="text-sm text-gray-400 flex items-center gap-1">
+                              <div className="text-sm text-muted-foreground flex items-center gap-1">
                                 <Mail className="w-3 h-3" />
                                 {client.email}
                               </div>
@@ -388,13 +388,13 @@ const AdminDashboard = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm space-y-1">
-                              <div className="text-gray-300">
+                              <div className="text-muted-foreground">
                                 Age: {client.profile?.age || "N/A"} | Weight:{" "}
                                 {client.profile?.weight || "N/A"} kg | Height:{" "}
                                 {client.profile?.height || "N/A"} cm
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-gray-400 capitalize">
+                                <span className="text-muted-foreground capitalize">
                                   {client.profile?.gender || "N/A"}
                                 </span>
                                 {client.profile?.fitnessLevel && (
@@ -407,12 +407,12 @@ const AdminDashboard = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {assignedCoach ? (
-                              <span className="text-sm text-gray-300">
+                              <span className="text-sm text-muted-foreground">
                                 {assignedCoach.firstName}{" "}
                                 {assignedCoach.lastName}
                               </span>
                             ) : (
-                              <span className="text-sm text-gray-400">
+                              <span className="text-sm text-muted-foreground">
                                 No coach assigned
                               </span>
                             )}
@@ -421,8 +421,8 @@ const AdminDashboard = () => {
                             <span
                               className={`px-2 py-1 text-xs font-medium rounded-full ${
                                 client.isActive
-                                  ? "bg-green-900/30 text-green-300"
-                                  : "bg-gray-700 text-gray-400"
+                                  ? "bg-green-900/30 text-accent"
+                                  : "bg-muted text-muted-foreground"
                               }`}
                             >
                               {client.isActive ? "Active" : "Inactive"}
@@ -448,8 +448,8 @@ const AdminDashboard = () => {
           </div>
 
           {/* Coaches Table */}
-          <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-700">
+          <div className="bg-card rounded-lg shadow-lg overflow-hidden">
+            <div className="px-6 py-4 border-b border-border">
               <h2 className="text-xl font-semibold flex items-center gap-2">
                 <UserCheck className="w-5 h-5" />
                 Coaches ({coaches.length})
@@ -457,30 +457,30 @@ const AdminDashboard = () => {
             </div>
 
             {coaches.length === 0 ? (
-              <div className="p-8 text-center text-gray-400">
+              <div className="p-8 text-center text-muted-foreground">
                 No coaches found.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-750 border-b border-gray-700">
+                  <thead className="bg-muted border-b border-border">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Coach
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Profile Info
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Specialization
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Clients Assigned
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
@@ -502,14 +502,14 @@ const AdminDashboard = () => {
                       return (
                         <tr
                           key={coach._id}
-                          className="hover:bg-gray-750 transition-colors"
+                          className="hover:bg-muted transition-colors"
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
-                              <div className="text-sm font-medium text-gray-100">
+                              <div className="text-sm font-medium text-foreground">
                                 {coach.firstName} {coach.lastName}
                               </div>
-                              <div className="text-sm text-gray-400 flex items-center gap-1">
+                              <div className="text-sm text-muted-foreground flex items-center gap-1">
                                 <Mail className="w-3 h-3" />
                                 {coach.email}
                               </div>
@@ -517,13 +517,13 @@ const AdminDashboard = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm space-y-1">
-                              <div className="text-gray-300">
+                              <div className="text-muted-foreground">
                                 Age: {coach.profile?.age || "N/A"} | Weight:{" "}
                                 {coach.profile?.weight || "N/A"} kg | Height:{" "}
                                 {coach.profile?.height || "N/A"} cm
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-gray-400 capitalize">
+                                <span className="text-muted-foreground capitalize">
                                   {coach.profile?.gender || "N/A"}
                                 </span>
                                 {coach.profile?.fitnessLevel && (
@@ -533,7 +533,7 @@ const AdminDashboard = () => {
                                 )}
                               </div>
                               {coach.coachProfile?.experience && (
-                                <div className="text-gray-400">
+                                <div className="text-muted-foreground">
                                   Experience:{" "}
                                   {coach.coachProfile.experience} years
                                 </div>
@@ -548,13 +548,13 @@ const AdminDashboard = () => {
                                   .map((spec) => (
                                     <span
                                       key={spec}
-                                      className="px-2 py-1 text-xs rounded-full bg-purple-900/30 text-purple-300 capitalize"
+                                      className="px-2 py-1 text-xs rounded-full bg-purple-900/30 text-primary capitalize"
                                     >
                                       {spec.replace("-", " ")}
                                     </span>
                                   ))}
                                 {coach.coachProfile.specialization.length > 3 && (
-                                  <span className="px-2 py-1 text-xs text-gray-400">
+                                  <span className="px-2 py-1 text-xs text-muted-foreground">
                                     +
                                     {coach.coachProfile.specialization.length -
                                       3}
@@ -562,14 +562,14 @@ const AdminDashboard = () => {
                                 )}
                               </div>
                             ) : (
-                              <span className="text-sm text-gray-400">
+                              <span className="text-sm text-muted-foreground">
                                 N/A
                               </span>
                             )}
                           </td>
                           <td className="px-6 py-4">
                             <div className="text-sm">
-                              <div className="text-gray-300 mb-1">
+                              <div className="text-muted-foreground mb-1">
                                 {assignedClients.length} client
                                 {assignedClients.length !== 1 ? "s" : ""}
                               </div>
@@ -578,13 +578,13 @@ const AdminDashboard = () => {
                                   {clientNames.slice(0, 2).map((name, idx) => (
                                     <span
                                       key={idx}
-                                      className="px-2 py-1 text-xs rounded-full bg-gray-700 text-gray-300"
+                                      className="px-2 py-1 text-xs rounded-full bg-muted text-muted-foreground"
                                     >
                                       {name}
                                     </span>
                                   ))}
                                   {clientNames.length > 2 && (
-                                    <span className="px-2 py-1 text-xs text-gray-400">
+                                    <span className="px-2 py-1 text-xs text-muted-foreground">
                                       +{clientNames.length - 2}
                                     </span>
                                   )}
@@ -596,8 +596,8 @@ const AdminDashboard = () => {
                             <span
                               className={`px-2 py-1 text-xs font-medium rounded-full ${
                                 coach.isActive
-                                  ? "bg-green-900/30 text-green-300"
-                                  : "bg-gray-700 text-gray-400"
+                                  ? "bg-green-900/30 text-accent"
+                                  : "bg-muted text-muted-foreground"
                               }`}
                             >
                               {coach.isActive ? "Active" : "Inactive"}
@@ -692,7 +692,7 @@ const UserDetailEditView = ({
         <div className="max-w-6xl mx-auto">
           <button
             onClick={onCancel}
-            className="mb-6 flex items-center gap-2 text-gray-400 hover:text-gray-100 transition-colors"
+            className="mb-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
             Back to {user.role === "user" ? "Clients" : "Coaches"}
@@ -702,7 +702,7 @@ const UserDetailEditView = ({
             <h1 className="text-3xl font-bold mb-2">
               Edit {user.firstName} {user.lastName}
             </h1>
-            <p className="text-gray-400 flex items-center gap-2">
+            <p className="text-muted-foreground flex items-center gap-2">
               <Mail className="w-4 h-4" />
               {user.email}
             </p>
@@ -710,86 +710,86 @@ const UserDetailEditView = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {/* Profile Card */}
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <div className="bg-card rounded-lg p-6 border border-border">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 Profile
               </h2>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">First Name</span>
+                  <span className="text-muted-foreground">First Name</span>
                   <input
                     type="text"
                     value={editForm.firstName}
                     onChange={(e) =>
                       setEditForm({ ...editForm, firstName: e.target.value })
                     }
-                    className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                    className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                   />
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Last Name</span>
+                  <span className="text-muted-foreground">Last Name</span>
                   <input
                     type="text"
                     value={editForm.lastName}
                     onChange={(e) =>
                       setEditForm({ ...editForm, lastName: e.target.value })
                     }
-                    className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                    className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                   />
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Email</span>
+                  <span className="text-muted-foreground">Email</span>
                   <input
                     type="email"
                     value={editForm.email}
                     onChange={(e) =>
                       setEditForm({ ...editForm, email: e.target.value })
                     }
-                    className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                    className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                   />
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Age</span>
+                  <span className="text-muted-foreground">Age</span>
                   <input
                     type="number"
                     value={editForm.age}
                     onChange={(e) =>
                       setEditForm({ ...editForm, age: e.target.value })
                     }
-                    className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                    className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                   />
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Weight (kg)</span>
+                  <span className="text-muted-foreground">Weight (kg)</span>
                   <input
                     type="number"
                     value={editForm.weight}
                     onChange={(e) =>
                       setEditForm({ ...editForm, weight: e.target.value })
                     }
-                    className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                    className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                   />
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Height (cm)</span>
+                  <span className="text-muted-foreground">Height (cm)</span>
                   <input
                     type="number"
                     value={editForm.height}
                     onChange={(e) =>
                       setEditForm({ ...editForm, height: e.target.value })
                     }
-                    className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                    className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                   />
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Gender</span>
+                  <span className="text-muted-foreground">Gender</span>
                   <select
                     value={editForm.gender}
                     onChange={(e) =>
                       setEditForm({ ...editForm, gender: e.target.value })
                     }
-                    className="w-48 px-2 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                    className="w-48 px-2 py-1 bg-muted text-foreground rounded border border-border"
                   >
                     <option value="">Select Gender</option>
                     <option value="male">Male</option>
@@ -798,7 +798,7 @@ const UserDetailEditView = ({
                 </div>
                 {user.role === "user" && (
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Fitness Level</span>
+                    <span className="text-muted-foreground">Fitness Level</span>
                     <select
                       value={editForm.fitnessLevel}
                       onChange={(e) =>
@@ -807,7 +807,7 @@ const UserDetailEditView = ({
                           fitnessLevel: e.target.value,
                         })
                       }
-                      className="w-48 px-2 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-2 py-1 bg-muted text-foreground rounded border border-border"
                     >
                       <option value="">Select Fitness Level</option>
                       <option value="beginner">Beginner</option>
@@ -819,7 +819,7 @@ const UserDetailEditView = ({
 
                 {user.role === "coach" && (
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Speciality</span>
+                    <span className="text-muted-foreground">Speciality</span>
                     <input
                       type="text"
                       value={editForm.speciality}
@@ -829,14 +829,14 @@ const UserDetailEditView = ({
                           speciality: e.target.value,
                         })
                       }
-                      className="w-48 px-3 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-48 px-3 py-1 bg-muted text-foreground rounded border border-border"
                       placeholder="e.g. strength, endurance"
                     />
                   </div>
                 )}
 
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Status</span>
+                  <span className="text-muted-foreground">Status</span>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
@@ -849,7 +849,7 @@ const UserDetailEditView = ({
                       }
                       className="w-4 h-4"
                     />
-                    <span className="text-gray-100">Active</span>
+                    <span className="text-foreground">Active</span>
                   </label>
                 </div>
               </div>
@@ -857,14 +857,14 @@ const UserDetailEditView = ({
 
             {/* Goals & Preferences */}
             {user.role === "user" && (
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+              <div className="bg-card rounded-lg p-6 border border-border">
                 <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Target className="w-5 h-5" />
                   Goals & Preferences
                 </h2>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm text-gray-400 mb-2">Goals</p>
+                    <p className="text-sm text-muted-foreground mb-2">Goals</p>
                     <div className="flex flex-wrap gap-2">
                       {availableGoals.map((goal) => (
                         <button
@@ -872,8 +872,8 @@ const UserDetailEditView = ({
                           onClick={() => toggleGoal(goal)}
                           className={`px-2 py-1 text-xs rounded-full capitalize transition-colors ${
                             editForm.goals?.includes(goal)
-                              ? "bg-purple-900/30 text-purple-300 border border-purple-500"
-                              : "bg-gray-700 text-gray-400 hover:bg-gray-600"
+                              ? "bg-purple-900/30 text-primary border border-purple-500"
+                              : "bg-muted text-muted-foreground hover:bg-secondary"
                           }`}
                         >
                           {goal.replace("-", " ")}
@@ -882,7 +882,7 @@ const UserDetailEditView = ({
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400 mb-2">Equipment</p>
+                    <p className="text-sm text-muted-foreground mb-2">Equipment</p>
                     <div className="flex flex-wrap gap-2">
                       {availableEquipment.map((eq) => (
                         <button
@@ -890,8 +890,8 @@ const UserDetailEditView = ({
                           onClick={() => toggleEquipment(eq)}
                           className={`px-2 py-1 text-xs rounded-full capitalize transition-colors ${
                             editForm.availableEquipment?.includes(eq)
-                              ? "bg-gray-600 text-gray-200 border border-gray-500"
-                              : "bg-gray-700 text-gray-400 hover:bg-gray-600"
+                              ? "bg-secondary text-foreground border border-border"
+                              : "bg-muted text-muted-foreground hover:bg-secondary"
                           }`}
                         >
                           {eq.replace("-", " ")}
@@ -900,7 +900,7 @@ const UserDetailEditView = ({
                     </div>
                   </div>
                   <div className="text-sm">
-                    <span className="text-gray-400">Workout Time: </span>
+                    <span className="text-muted-foreground">Workout Time: </span>
                     <select
                       value={editForm.workoutTime}
                       onChange={(e) =>
@@ -909,7 +909,7 @@ const UserDetailEditView = ({
                           workoutTime: e.target.value,
                         })
                       }
-                      className="ml-2 px-2 py-1 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="ml-2 px-2 py-1 bg-muted text-foreground rounded border border-border"
                     >
                       <option value="">Select Time</option>
                       <option value="morning">Morning</option>
@@ -923,20 +923,20 @@ const UserDetailEditView = ({
 
             {/* Coach Assignment (for clients only) */}
             {user.role === "user" && (
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 md:col-span-2">
+              <div className="bg-card rounded-lg p-6 border border-border md:col-span-2">
                 <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <UserCheck className="w-5 h-5" />
                   Coach Assignment
                 </h2>
                 <div className="flex items-center gap-4">
                   <div className="flex-1">
-                    <label className="block text-sm text-gray-400 mb-2">
+                    <label className="block text-sm text-muted-foreground mb-2">
                       Assign Coach
                     </label>
                     <select
                       value={selectedCoachId}
                       onChange={(e) => setSelectedCoachId(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600"
+                      className="w-full px-3 py-2 bg-muted text-foreground rounded border border-border"
                     >
                       <option value="">No Coach Assigned</option>
                       {coaches.map((coach) => (
@@ -948,7 +948,7 @@ const UserDetailEditView = ({
                   </div>
                   {assignedCoach && (
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-300">
+                      <span className="text-sm text-muted-foreground">
                         Currently: {assignedCoach.firstName}{" "}
                         {assignedCoach.lastName}
                       </span>
@@ -970,7 +970,7 @@ const UserDetailEditView = ({
           </div>
 
           {/* Actions */}
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <div className="bg-card rounded-lg p-6 border border-border">
             <h2 className="text-lg font-semibold mb-4">Actions</h2>
             <div className="flex flex-wrap gap-3">
               <button
@@ -984,7 +984,7 @@ const UserDetailEditView = ({
               <button
                 onClick={onCancel}
                 disabled={saving}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-800 disabled:cursor-not-allowed text-white rounded-lg text-sm flex items-center gap-2 transition-colors"
+                className="px-4 py-2 bg-secondary hover:bg-muted disabled:bg-card disabled:cursor-not-allowed text-white rounded-lg text-sm flex items-center gap-2 transition-colors"
               >
                 <X className="w-4 h-4" />
                 Cancel

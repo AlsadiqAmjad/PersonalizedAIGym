@@ -77,17 +77,17 @@ const Preferences = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
+    <div className="min-h-screen bg-background text-foreground p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
             <FileText className="w-8 h-8" />
             Additional Preferences
           </h1>
-          <p className="text-gray-400">Share any additional information that will help us customize your plan</p>
+          <p className="text-muted-foreground">Share any additional information that will help us customize your plan</p>
         </div>
 
-        <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700 space-y-6">
+        <div className="bg-card rounded-lg shadow-lg p-6 border border-border space-y-6">
           {/* Question 1 */}
           <div>
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -99,7 +99,7 @@ const Preferences = () => {
               onChange={(e) => setInjuries(e.target.value)}
               placeholder="Write here... (e.g., knee injury, lower back pain, etc.)"
               rows={4}
-              className="w-full px-4 py-2 bg-gray-700 text-gray-100 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+              className="w-full px-4 py-2 bg-muted text-foreground rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
             />
           </div>
 
@@ -114,7 +114,7 @@ const Preferences = () => {
               onChange={(e) => setPreferences(e.target.value)}
               placeholder="Write here... (e.g., prefer morning workouts, dislike running, etc.)"
               rows={4}
-              className="w-full px-4 py-2 bg-gray-700 text-gray-100 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+              className="w-full px-4 py-2 bg-muted text-foreground rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
             />
           </div>
 
@@ -125,7 +125,7 @@ const Preferences = () => {
           )}
 
           {/* Summary Button */}
-          <div className="pt-4 border-t border-gray-700">
+          <div className="pt-4 border-t border-border">
             <button
               type="button"
               onClick={() => {
@@ -145,7 +145,7 @@ const Preferences = () => {
                   alert('Please complete all required fields first.');
                 }
               }}
-              className="w-full px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 mb-4"
+              className="w-full px-4 py-2 bg-secondary hover:bg-muted text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 mb-4"
             >
               <Eye className="w-4 h-4" />
               Preview Summary
@@ -154,7 +154,7 @@ const Preferences = () => {
 
           {/* Summary View */}
           {showSummary && (
-            <div className="mt-4 p-4 bg-gray-700 rounded-lg border border-gray-600">
+            <div className="mt-4 p-4 bg-muted rounded-lg border border-border">
               <h3 className="text-lg font-semibold mb-3">Onboarding Summary</h3>
               <div className="space-y-2 text-sm">
                 <div><strong>Age:</strong> {onboardingStorage.get('age')}</div>
@@ -170,7 +170,7 @@ const Preferences = () => {
               <button
                 type="button"
                 onClick={() => setShowSummary(false)}
-                className="mt-3 w-full px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded text-sm"
+                className="mt-3 w-full px-4 py-2 bg-secondary hover:bg-muted text-white rounded text-sm"
               >
                 Close Summary
               </button>
@@ -178,11 +178,11 @@ const Preferences = () => {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between items-center pt-4 border-t border-gray-700">
+          <div className="flex justify-between items-center pt-4 border-t border-border">
             <button
               onClick={() => navigate("/member/schedule")}
               disabled={loading}
-              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-800 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-secondary hover:bg-muted disabled:bg-card disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous

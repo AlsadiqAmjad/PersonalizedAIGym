@@ -79,14 +79,14 @@ const SignUp = () => {
             <UserPlus className="w-8 h-8" />
             Sign Up
           </h1>
-          <p className="text-gray-400">Create your account to get started</p>
+          <p className="text-muted-foreground">Create your account to get started</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+          <div className="bg-card rounded-lg shadow-lg p-6 border border-border">
             <form className="flex flex-col gap-4" onSubmit={handleSignUp}>
               <div className="flex flex-col">
-                <label htmlFor="firstName" className="text-sm text-gray-400 mb-1">
+                <label htmlFor="firstName" className="text-sm text-muted-foreground mb-1">
                   First Name
                 </label>
                 <input
@@ -95,13 +95,13 @@ const SignUp = () => {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Enter your first name"
-                  className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="lastName" className="text-sm text-gray-400 mb-1">
+                <label htmlFor="lastName" className="text-sm text-muted-foreground mb-1">
                   Last Name
                 </label>
                 <input
@@ -110,13 +110,13 @@ const SignUp = () => {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Enter your last name"
-                  className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="email" className="text-sm text-gray-400 mb-1">
+                <label htmlFor="email" className="text-sm text-muted-foreground mb-1">
                   Email
                 </label>
                 <input
@@ -125,13 +125,13 @@ const SignUp = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="example@email.com"
-                  className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="password" className="text-sm text-gray-400 mb-1">
+                <label htmlFor="password" className="text-sm text-muted-foreground mb-1">
                   Password
                 </label>
                 <input
@@ -140,7 +140,7 @@ const SignUp = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -148,7 +148,7 @@ const SignUp = () => {
               <div className="flex flex-col">
                 <label
                   htmlFor="confirmPassword"
-                  className="text-sm text-gray-400 mb-1"
+                  className="text-sm text-muted-foreground mb-1"
                 >
                   Confirm Password
                 </label>
@@ -158,20 +158,20 @@ const SignUp = () => {
                   value={repeatedPassword}
                   onChange={(e) => setRepeatedPassword(e.target.value)}
                   placeholder="Confirm your password"
-                  className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 bg-muted text-foreground rounded border border-border focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="accountType" className="text-sm text-gray-400 mb-1">
+                <label htmlFor="accountType" className="text-sm text-muted-foreground mb-1">
                   Account Type
                 </label>
                 <select
                   id="accountType"
                   value={accountType}
                   onChange={(e) => setAccountType(e.target.value)}
-                  className="px-4 py-2 bg-gray-700 text-gray-100 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  className="px-4 py-2 bg-muted text-foreground rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                   required
                 >
                   <option value="user">User</option>
@@ -195,11 +195,11 @@ const SignUp = () => {
                 {loading ? "Creating account..." : "Sign Up"}
               </button>
 
-              <p className="text-center text-sm mt-2 text-gray-400">
+              <p className="text-center text-sm mt-2 text-muted-foreground">
                 Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="text-blue-400 font-medium hover:text-blue-300 hover:underline"
+                  className="text-primary font-medium hover:text-blue-300 hover:underline"
                 >
                   Login
                 </Link>

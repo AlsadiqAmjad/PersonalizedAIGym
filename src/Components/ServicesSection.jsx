@@ -19,7 +19,7 @@ const services = [
     icon: Calendar,
     title: "Workout Schedules",
     description: "Structured weekly plans that fit your lifestyle and maximize your results.",
-    color: "text-blue-400",
+    color: "text-primary",
     bgColor: "bg-blue-400/10",
   },
 ];
