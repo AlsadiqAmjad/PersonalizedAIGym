@@ -470,7 +470,7 @@ class CoachController {
         
         const mappedSplit = splitMapping[profileData.workoutSplit] || 'custom';
         
-        await ScheduleService.updateSchedule(
+        await ScheduleService.generateSchedule(
           clientId,
           mappedSplit,
           profileData.workoutDaysPerWeek || updatedClient.profile.workoutDaysPerWeek
@@ -478,36 +478,85 @@ class CoachController {
       }
 
       // Regenerate nutrition plan if nutrition-related data changed
-      if (profileData.weight || profileData.height || profileData.age || 
-          profileData.gender || profileData.goals || profileData.dietaryRestrictions || 
-          profileData.allergies) {
+      if (
+        profileData.weight ||
+        profileData.height ||
+        profileData.age ||
+        profileData.gender ||
+        profileData.goals ||
+        profileData.dietaryRestrictions ||
+        profileData.allergies
+      ) {
         try {
-          const dailyCalorieTarget = OpenAIService.calculateDailyCalorieTarget(updatedClient.profile);
-          
+          // 1) Recalculate calories using the updated profile
+          const dailyCalorieTarget =
+            OpenAIService.calculateDailyCalorieTarget(updatedClient.profile);
+
+          // 2) Ask OpenAI for a new nutrition plan
           const newNutritionPlan = await OpenAIService.generateMealPlan(
             updatedClient.profile,
             updatedClient.preferences,
             dailyCalorieTarget
           );
 
-          if (newNutritionPlan && newNutritionPlan.length > 0) {
+          // 3) Normalize: allow array or single object
+          const plan = Array.isArray(newNutritionPlan)
+            ? newNutritionPlan[0]
+            : newNutritionPlan;
+
+          if (plan) {
+            // 4) Deactivate existing active plans
             await NutritionPlan.updateMany(
               { userId: clientId, isActive: true },
               { isActive: false }
             );
 
+            // 5) Meals array – tolerate missing / different shapes
+            const mealsArray = Array.isArray(plan.meals) ? plan.meals : [];
+
+            // 6) Macro targets – ensure required fields exist
+            const macroFromPlan = plan.macroTargets || {};
+            const macroTargets = {
+              protein:
+                macroFromPlan.protein != null
+                  ? macroFromPlan.protein
+                  : 0,
+              carbs:
+                macroFromPlan.carbs != null
+                  ? macroFromPlan.carbs
+                  : 0,
+              fat:
+                macroFromPlan.fat != null
+                  ? macroFromPlan.fat
+                  : 0,
+            };
+
+            // 7) Dates – required by schema
+            const startDate = plan.startDate
+              ? new Date(plan.startDate)
+              : new Date();
+            const endDate = plan.endDate
+              ? new Date(plan.endDate)
+              : new Date(
+                  startDate.getTime() + 7 * 24 * 60 * 60 * 1000 // 7-day plan fallback
+                );
+
+            // 8) Create the new active nutrition plan
             const nutritionPlan = new NutritionPlan({
               userId: clientId,
               dailyCalorieTarget,
-              macroTargets: newNutritionPlan[0].macroTargets,
-              meals: newNutritionPlan[0].meals.map(meal => meal._id),
-              isActive: true
+              macroTargets,
+              meals: mealsArray.map((meal) => meal._id || meal),
+              startDate,
+              endDate,
+              isActive: true,
             });
 
             await nutritionPlan.save();
           }
         } catch (error) {
-          console.error('Error regenerating nutrition plan:', error);
+          console.error("Error regenerating nutrition plan:", error);
+          // Don’t block profile update if regeneration fails
         }
       }
 
@@ -837,33 +886,42 @@ class CoachController {
       // Regenerate nutrition plan if goals changed
       if (goals && goals !== client.profile.goals) {
         try {
-          const dailyCalorieTarget = OpenAIService.calculateDailyCalorieTarget(updatedProfile);
-          const newNutritionPlan = await OpenAIService.generateMealPlan(
-            updatedProfile,
-            client.preferences,
-            dailyCalorieTarget
-          );
+          const dailyCalorieTarget =
+            OpenAIService.calculateDailyCalorieTarget(updatedProfile);
 
-          if (newNutritionPlan && newNutritionPlan.length > 0) {
+          const newNutritionPlan =
+            await OpenAIService.generateMealPlan(
+              updatedProfile,
+              client.preferences,
+              dailyCalorieTarget
+            );
+
+          const plan = Array.isArray(newNutritionPlan)
+            ? newNutritionPlan[0]
+            : newNutritionPlan;
+
+          if (plan) {
             // Deactivate old nutrition plan
             await NutritionPlan.updateMany(
               { userId: clientId, isActive: true },
               { isActive: false }
             );
 
+            const mealsArray = Array.isArray(plan.meals) ? plan.meals : [];
+
             // Create new nutrition plan
             const nutritionPlan = new NutritionPlan({
               userId: clientId,
               dailyCalorieTarget,
-              macroTargets: newNutritionPlan[0].macroTargets,
-              meals: newNutritionPlan[0].meals.map(meal => meal._id),
-              isActive: true
+              macroTargets: plan.macroTargets || {},
+              meals: mealsArray.map((meal) => meal._id || meal),
+              isActive: true,
             });
 
             await nutritionPlan.save();
           }
         } catch (error) {
-          console.error('Error regenerating nutrition plan:', error);
+          console.error("Error regenerating nutrition plan:", error);
         }
       }
 

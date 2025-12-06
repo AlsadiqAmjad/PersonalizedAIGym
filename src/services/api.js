@@ -304,12 +304,11 @@ export const adminAPI = {
   },
 };
 
-// Coach API functions
 export const coachAPI = {
   getDashboardStats: async (token) => {
     const response = await fetch(`${API_BASE_URL}/coach/dashboard/stats`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.json();
@@ -324,6 +323,76 @@ export const coachAPI = {
     const response = await fetch(`${API_BASE_URL}/coach/clients/${clientId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    return response.json();
+  },
+
+  // PUT /coach/clients/:clientId/profile
+  updateClientProfile: async (token, clientId, profileData) => {
+    const response = await fetch(
+      `${API_BASE_URL}/coach/clients/${clientId}/profile`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(profileData),
+      }
+    );
+    return response.json();
+  },
+
+  // POST /coach/clients/:clientId/regenerate-plan
+  regenerateClientPlan: async (token, clientId, payload = {}) => {
+    const response = await fetch(
+      `${API_BASE_URL}/coach/clients/${clientId}/regenerate-plan`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+    return response.json();
+  },
+
+  // POST /coach/clients/:clientId/workouts/:workoutId/exercises/:exerciseId/comments
+  addExerciseComment: async (
+    token,
+    clientId,
+    workoutId,
+    exerciseId,
+    comment
+  ) => {
+    const response = await fetch(
+      `${API_BASE_URL}/coach/clients/${clientId}/workouts/${workoutId}/exercises/${exerciseId}/comments`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ comment }),
+      }
+    );
+    return response.json();
+  },
+
+  // POST /coach/clients/:clientId/meals/:mealId/comments
+  addMealComment: async (token, clientId, mealId, comment) => {
+    const response = await fetch(
+      `${API_BASE_URL}/coach/clients/${clientId}/meals/${mealId}/comments`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ comment }),
+      }
+    );
     return response.json();
   },
 };

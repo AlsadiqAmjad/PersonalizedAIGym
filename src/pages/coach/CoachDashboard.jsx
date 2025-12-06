@@ -129,6 +129,7 @@ const CoachDashboard = () => {
       <ClientDetailView
         client={selectedClient}
         onBack={handleBackToList}
+        onClientUpdated={setSelectedClient}
       />
     );
   }
@@ -297,15 +298,17 @@ const CoachDashboard = () => {
   );
 };
 
-const ClientDetailView = ({ client, onBack }) => {
+const ClientDetailView = ({ client, onBack, onClientUpdated }) => {
   // client is the full clientData object from getClientDetails
   const clientData = client;
 
   const clientUser = clientData.client || clientData;
+  const clientId = clientUser._id;
 
   const workouts = clientData.workouts || [];
   const completedWorkouts = workouts.filter((w) => w.isCompleted);
   const upcomingWorkouts = workouts.filter((w) => !w.isCompleted);
+  const meals = clientData.meals || [];
 
   const activePlan =
     (clientData.nutritionPlans || []).find((p) => p.isActive) ||
@@ -340,6 +343,256 @@ const ClientDetailView = ({ client, onBack }) => {
     return workout.workoutType || "";
   };
 
+  // ----- Actions & modal state -----
+  const profile = clientUser.profile || {};
+
+  const [editPlanOpen, setEditPlanOpen] = useState(false);
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
+  const [editPlanLoading, setEditPlanLoading] = useState(false);
+  const [commentLoading, setCommentLoading] = useState(false);
+  const [actionError, setActionError] = useState("");
+  const [actionSuccess, setActionSuccess] = useState("");
+
+  const [editDaysPerWeek, setEditDaysPerWeek] = useState(
+    profile.workoutDaysPerWeek || 3
+  );
+  const [editTimePerWorkout, setEditTimePerWorkout] = useState(
+    profile.timePerWorkout || 60
+  );
+  const [editWorkoutSplit, setEditWorkoutSplit] = useState(
+    profile.workoutSplit || "fb"
+  );
+
+  const [commentTarget, setCommentTarget] = useState("workout"); // "workout" | "meal"
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState(
+    workouts[0]?._id || ""
+  );
+  const [selectedExerciseId, setSelectedExerciseId] = useState(
+    workouts[0]?.exercises?.[0]?._id || ""
+  );
+  const [selectedMealId, setSelectedMealId] = useState(meals[0]?._id || "");
+  const [commentText, setCommentText] = useState("");
+
+  const handleOpenEditPlan = () => {
+    const p = clientUser.profile || {};
+    setEditDaysPerWeek(p.workoutDaysPerWeek || 3);
+    setEditTimePerWorkout(p.timePerWorkout || 60);
+    setEditWorkoutSplit(p.workoutSplit || "fb");
+    setActionError("");
+    setActionSuccess("");
+    setEditPlanOpen(true);
+  };
+
+  const handleOpenCommentModal = () => {
+    const workoutsList = workouts || [];
+    const mealsList = meals || [];
+
+    if (workoutsList.length === 0 && mealsList.length === 0) {
+      setActionError(
+        "There are no workouts or meals for this client yet to comment on."
+      );
+      return;
+    }
+
+    if (workoutsList.length > 0) {
+      setCommentTarget("workout");
+      setSelectedWorkoutId(workoutsList[0]._id);
+      const firstExercise =
+        workoutsList[0].exercises && workoutsList[0].exercises[0];
+      setSelectedExerciseId(firstExercise ? firstExercise._id : "");
+    } else {
+      setCommentTarget("meal");
+    }
+
+    if (mealsList.length > 0) {
+      setSelectedMealId(mealsList[0]._id);
+    } else {
+      setSelectedMealId("");
+    }
+
+    setCommentText("");
+    setActionError("");
+    setActionSuccess("");
+    setCommentModalOpen(true);
+  };
+
+  const handleWorkoutChange = (e) => {
+    const newWorkoutId = e.target.value;
+    setSelectedWorkoutId(newWorkoutId);
+
+    const w = workouts.find((wk) => wk._id === newWorkoutId);
+    const firstExercise = w && w.exercises && w.exercises[0];
+    setSelectedExerciseId(firstExercise ? firstExercise._id : "");
+  };
+
+  const refreshClientDetails = async () => {
+    try {
+      const token = getAuthToken();
+      if (!token || !clientId || !onClientUpdated) return;
+
+      const res = await coachAPI.getClientDetails(token, clientId);
+      if (res.success && res.data) {
+        onClientUpdated(res.data);
+      }
+    } catch (err) {
+      console.error("Failed to refresh client details:", err);
+    }
+  };
+
+  const handleSavePlan = async () => {
+    try {
+      setEditPlanLoading(true);
+      setActionError("");
+      setActionSuccess("");
+
+      const token = getAuthToken();
+      if (!token) {
+        setActionError("Not authenticated. Please log in again.");
+        return;
+      }
+
+      const currentProfile = clientUser.profile || {};
+
+      // IMPORTANT: include all profile fields so we don't overwrite them with undefined
+      const profileData = {
+        age: currentProfile.age,
+        weight: currentProfile.weight,
+        height: currentProfile.height,
+        gender: currentProfile.gender,
+        fitnessLevel: currentProfile.fitnessLevel,
+        goals: currentProfile.goals || [],
+        workoutDaysPerWeek: Number(editDaysPerWeek),
+        workoutSplit: editWorkoutSplit,
+        timePerWorkout: Number(editTimePerWorkout),
+        dietaryRestrictions: currentProfile.dietaryRestrictions || [],
+        allergies: currentProfile.allergies || [],
+      };
+
+      const res = await coachAPI.updateClientProfile(
+        token,
+        clientId,
+        profileData
+      );
+
+      if (!res.success) {
+        setActionError(res.message || "Failed to update workout plan.");
+        return;
+      }
+
+      setActionSuccess("Workout plan updated successfully.");
+      await refreshClientDetails();
+      setEditPlanOpen(false);
+    } catch (err) {
+      console.error("Error updating client workout plan:", err);
+      setActionError(err.message || "Failed to update workout plan.");
+    } finally {
+      setEditPlanLoading(false);
+    }
+  };
+
+  const handleRegeneratePlan = async () => {
+    try {
+      setRegenerating(true);
+      setActionError("");
+      setActionSuccess("");
+
+      const token = getAuthToken();
+      if (!token) {
+        setActionError("Not authenticated. Please log in again.");
+        return;
+      }
+
+      const currentProfile = clientUser.profile || {};
+
+      const res = await coachAPI.regenerateClientPlan(token, clientId, {
+        goals: currentProfile.goals || [],
+        workoutSplit: currentProfile.workoutSplit,
+        fitnessLevel: currentProfile.fitnessLevel,
+        timePerWorkout: currentProfile.timePerWorkout,
+      });
+
+      if (!res.success) {
+        setActionError(res.message || "Failed to regenerate client plan.");
+        return;
+      }
+
+      setActionSuccess("Client plan regenerated successfully.");
+      await refreshClientDetails();
+    } catch (err) {
+      console.error("Error regenerating client plan:", err);
+      setActionError(err.message || "Failed to regenerate client plan.");
+    } finally {
+      setRegenerating(false);
+    }
+  };
+
+  const handleSubmitComment = async () => {
+    try {
+      setCommentLoading(true);
+      setActionError("");
+      setActionSuccess("");
+
+      const token = getAuthToken();
+      if (!token) {
+        setActionError("Not authenticated. Please log in again.");
+        return;
+      }
+
+      const trimmed = commentText.trim();
+      if (!trimmed) {
+        setActionError("Please enter a comment before submitting.");
+        return;
+      }
+
+      let res;
+      if (commentTarget === "workout") {
+        if (!selectedWorkoutId || !selectedExerciseId) {
+          setActionError(
+            "Please select a workout and exercise to attach your comment to."
+          );
+          return;
+        }
+
+        res = await coachAPI.addExerciseComment(
+          token,
+          clientId,
+          selectedWorkoutId,
+          selectedExerciseId,
+          trimmed
+        );
+      } else {
+        if (!selectedMealId) {
+          setActionError("Please select a meal to attach your comment to.");
+          return;
+        }
+
+        res = await coachAPI.addMealComment(
+          token,
+          clientId,
+          selectedMealId,
+          trimmed
+        );
+      }
+
+      if (!res.success) {
+        setActionError(res.message || "Failed to add comment.");
+        return;
+      }
+
+      setActionSuccess("Comment added successfully.");
+      setCommentModalOpen(false);
+      setCommentText("");
+
+      await refreshClientDetails();
+    } catch (err) {
+      console.error("Error adding coach comment:", err);
+      setActionError(err.message || "Failed to add comment.");
+    } finally {
+      setCommentLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground pt-16">
       <DashboardHeader />
@@ -352,6 +605,18 @@ const ClientDetailView = ({ client, onBack }) => {
             <ChevronLeft className="w-5 h-5" />
             Back to Clients
           </button>
+
+          {actionError && (
+            <div className="mb-4 px-3 py-2 bg-red-900/30 text-red-300 rounded text-sm border border-red-800">
+              {actionError}
+            </div>
+          )}
+
+          {actionSuccess && (
+            <div className="mb-4 px-3 py-2 bg-emerald-900/30 text-emerald-300 rounded text-sm border border-emerald-800">
+              {actionSuccess}
+            </div>
+          )}
 
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">
@@ -425,7 +690,9 @@ const ClientDetailView = ({ client, onBack }) => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">Equipment</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Equipment
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {(clientUser.profile?.availableEquipment || []).map(
                       (eq) => (
@@ -556,9 +823,276 @@ const ClientDetailView = ({ client, onBack }) => {
             </div>
           </div>
 
-          {/* Actions (kept commented as in original) */}
+          {/* Actions */}
+          <div className="bg-card rounded-lg p-6 border border-border">
+            <h2 className="text-lg font-semibold mb-4">Actions</h2>
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={handleOpenEditPlan}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={editPlanLoading || regenerating || commentLoading}
+              >
+                <Edit className="w-4 h-4" />
+                {editPlanLoading ? "Saving..." : "Edit Workout Plan"}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleOpenCommentModal}
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={regenerating || editPlanLoading || commentLoading}
+              >
+                <MessageSquare className="w-4 h-4" />
+                Add Comment
+              </button>
+
+              <button
+                type="button"
+                onClick={handleRegeneratePlan}
+                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={regenerating || editPlanLoading || commentLoading}
+              >
+                <Activity className="w-4 h-4" />
+                {regenerating ? "Regenerating..." : "Regenerate Plan"}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Edit Workout Plan Modal */}
+      {editPlanOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-card border border-border rounded-xl p-6 w-full max-w-lg shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Edit Workout Plan</h3>
+              <button
+                type="button"
+                onClick={() => setEditPlanOpen(false)}
+                className="p-1 rounded-full hover:bg-muted"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-sm text-muted-foreground mb-4">
+              Adjust this client&apos;s high-level workout preferences. Saving
+              will update their profile and keep future plans aligned.
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Workout days per week
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={7}
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                  value={editDaysPerWeek}
+                  onChange={(e) =>
+                    setEditDaysPerWeek(Number(e.target.value) || 1)
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Time per workout (minutes)
+                </label>
+                <input
+                  type="number"
+                  min={15}
+                  max={180}
+                  step={5}
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                  value={editTimePerWorkout}
+                  onChange={(e) =>
+                    setEditTimePerWorkout(Number(e.target.value) || 30)
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Workout split
+                </label>
+                <select
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                  value={editWorkoutSplit}
+                  onChange={(e) => setEditWorkoutSplit(e.target.value)}
+                >
+                  <option value="fb">Full body</option>
+                  <option value="ppl">Push / Pull / Legs</option>
+                  <option value="ul">Upper / Lower</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setEditPlanOpen(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium border border-border hover:bg-muted"
+                disabled={editPlanLoading || regenerating || commentLoading}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSavePlan}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+                disabled={editPlanLoading || regenerating || commentLoading}
+              >
+                {editPlanLoading ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Comment Modal */}
+      {commentModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-card border border-border rounded-xl p-6 w-full max-w-lg shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Add Coach Comment</h3>
+              <button
+                type="button"
+                onClick={() => setCommentModalOpen(false)}
+                className="p-1 rounded-full hover:bg-muted"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-sm text-muted-foreground mb-3">
+              Attach a note to either a specific workout exercise or a meal for
+              this client.
+            </p>
+
+            <div className="mb-4 flex gap-3 text-sm">
+              <button
+                type="button"
+                onClick={() => setCommentTarget("workout")}
+                className={`px-3 py-1 rounded-full border text-xs ${
+                  commentTarget === "workout"
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted text-muted-foreground border-border"
+                }`}
+              >
+                Workout
+              </button>
+              <button
+                type="button"
+                onClick={() => setCommentTarget("meal")}
+                className={`px-3 py-1 rounded-full border text-xs ${
+                  commentTarget === "meal"
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted text-muted-foreground border-border"
+                }`}
+              >
+                Meal
+              </button>
+            </div>
+
+            {commentTarget === "workout" ? (
+              <div className="space-y-3 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Workout
+                  </label>
+                  <select
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                    value={selectedWorkoutId}
+                    onChange={handleWorkoutChange}
+                  >
+                    {workouts.map((w) => (
+                      <option key={w._id} value={w._id}>
+                        {getWorkoutTitle(w)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Exercise
+                  </label>
+                  <select
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                    value={selectedExerciseId}
+                    onChange={(e) => setSelectedExerciseId(e.target.value)}
+                  >
+                    {(workouts.find((w) => w._id === selectedWorkoutId)
+                      ?.exercises || []
+                    ).map((ex) => (
+                      <option key={ex._id} value={ex._id}>
+                        {ex.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            ) : (
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">
+                  Meal
+                </label>
+                <select
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                  value={selectedMealId}
+                  onChange={(e) => setSelectedMealId(e.target.value)}
+                >
+                  {meals.map((m) => (
+                    <option key={m._id} value={m._id}>
+                      {m.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">
+                Comment
+              </label>
+              <textarea
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm min-h-[120px] resize-y"
+                placeholder="Write a brief coaching note..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+              />
+            </div>
+
+            <div className="mt-4 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setCommentModalOpen(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium border border-border hover:bg-muted"
+                disabled={commentLoading || regenerating || editPlanLoading}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmitComment}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+                disabled={
+                  commentLoading ||
+                  regenerating ||
+                  editPlanLoading ||
+                  !commentText.trim()
+                }
+              >
+                {commentLoading ? "Saving..." : "Add Comment"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
