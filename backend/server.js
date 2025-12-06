@@ -52,12 +52,14 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
 const coachRoutes = require('./routes/coach');
+const publicRoutes = require('./routes/public');
 
 // API routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/coach', coachRoutes);
+app.use('/api/v1/public', publicRoutes);
 
 // Health check endpoint
 app.get('/api/v1/health', (req, res) => {

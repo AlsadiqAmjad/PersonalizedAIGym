@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI, setAuthToken } from "../../services/api";
 import { LogIn, Mail, Lock } from "lucide-react";
+import Header from "../../Components/Header"; // uses theme + dashboard button
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -57,20 +58,27 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-background text-foreground pt-16">
+      <Header hideNav />
+
+      <div className="max-w-md mx-auto p-8">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold mb-2 flex items-center justify-center gap-2">
             <LogIn className="w-8 h-8" />
             Login
           </h1>
-          <p className="text-gray-400">Welcome back! Please sign in to your account</p>
+          <p className="text-gray-400">
+            Welcome back! Please sign in to your account
+          </p>
         </div>
 
         <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
           <form className="flex flex-col gap-4" onSubmit={handleLogin}>
             <div className="flex flex-col">
-              <label htmlFor="email" className="text-sm text-gray-400 mb-1 flex items-center gap-1">
+              <label
+                htmlFor="email"
+                className="text-sm text-gray-400 mb-1 flex items-center gap-1"
+              >
                 <Mail className="w-4 h-4" />
                 Email
               </label>
@@ -86,7 +94,10 @@ const Login = () => {
             </div>
 
             <div className="flex flex-col">
-              <label htmlFor="password" className="text-sm text-gray-400 mb-1 flex items-center gap-1">
+              <label
+                htmlFor="password"
+                className="text-sm text-gray-400 mb-1 flex items-center gap-1"
+              >
                 <Lock className="w-4 h-4" />
                 Password
               </label>
@@ -99,7 +110,9 @@ const Login = () => {
                 className="px-4 py-2 bg-gray-700 text-gray-100 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                 required
               />
-              <p className="text-xs text-gray-500 mt-1">Demo: Use "password123" for test accounts</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Demo: Use "password123" for test accounts
+              </p>
             </div>
 
             {error && (

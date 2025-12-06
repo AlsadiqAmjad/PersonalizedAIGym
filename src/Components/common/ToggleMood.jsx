@@ -1,40 +1,25 @@
-// Icons
+// src/Components/common/ToggleMood.jsx
 import { Sun, Moon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useTheme } from "../ThemeProvider.jsx";
 
 const ToggleMood = () => {
-  const [darkMode, setDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem("darkMode");
-    return savedMode ? JSON.parse(savedMode) : true; // Default to dark mode
-  });
-
-  useEffect(() => {
-    const html = document.documentElement;
-    const body = document.body;
-    if (darkMode) {
-      html.classList.add("dark");
-      body.classList.add("dark");
-    } else {
-      html.classList.remove("dark");
-      body.classList.remove("dark");
-    }
-    localStorage.setItem("darkMode", JSON.stringify(darkMode));
-  }, [darkMode]);
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
-    <div
-      className="hover:cursor-pointer p-2 rounded-full transition-colors duration-200"
-      onClick={() => setDarkMode(!darkMode)}
-      title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+    <button
+      type="button"
+      onClick={toggleTheme}
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card/60 hover:bg-card transition-colors"
     >
-      {darkMode ? (
-        <Sun className="el w-6 h-6 text-yellow-400 hover:text-yellow-300" />
+      {isDark ? (
+        <Sun className="w-5 h-5 text-yellow-400" />
       ) : (
-        <Moon className="el w-6 h-6 text-gray-400 hover:text-gray-300" />
+        <Moon className="w-5 h-5 text-gray-400" />
       )}
-    </div>
+    </button>
   );
 };
 
 export default ToggleMood;
-

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 /* Utilities */
 @utility flex-center {
   @apply flex justify-center items-center;
@@ -9,116 +10,206 @@
 @utility abs-center {
   @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
 }
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-} */
-::selection {
-  @apply text-yellow-200;
-}
-body {
-  font-family: "Bebas Neue", sans-serif;
-  font-optical-sizing: auto;
-  font-size: 18px;
-}
-.dark {
-  background-color: #191717;
-  color: white;
-}
-.li {
-  list-style-type: none;
-  @apply p-2;
-}
-.li:hover {
-  cursor: pointer;
-}
-/* This part of styling is for Hero */
-#hero {
-  /* background-image: url("../../assets/img2.jpeg"); */
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  background-attachment: fixed;
-  width: 100%;
-  height: calc(100vh - 70px);
-}
-#hero > .con {
-  /* To make the height of the hero + the header = 100vh, we subtract the hight of the header which is 70px */
-  height: calc(100vh - 70px);
-}
-.word {
-  display: inline-block;
-  margin-right: 0.25em;
-  white-space: pre;
-}
-.welcoming {
-  display: block;
-  white-space: normal;
-}
-/* SubHero style */
-.sub-hero {
-  height: calc(100vh - 70px);
-}
-.middle-photo {
-  width: 150px;
-  height: 150px;
-  border-radius: 10px;
-}
 
-@media (min-width: 640px) {
-  .middle-photo {
-    width: 180px;
-    height: 180px;
+/* Base theme tokens and global styles */
+@layer base {
+  :root {
+    /* LIGHT THEME DEFAULTS */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 200 100% 85%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 48 96% 53%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 200 100% 85%;
+
+    --radius: 1rem;
+  }
+
+  /* DARK THEME OVERRIDES WHEN <html class="dark"> */
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 14%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 200 100% 85%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 222 47% 18%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 222 47% 20%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 48 96% 53%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 19% 27%;
+    --input: 217 19% 27%;
+    --ring: 200 100% 85%;
+  }
+
+  /* global border color */
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .container {
+    @apply max-w-6xl mx-auto px-4;
+  }
+
+  .section-badge {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border;
+    background-color: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary) / 0.2);
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold tracking-tight;
+  }
+
+  .section-subtitle {
+    @apply mt-2;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .card-surface {
+    @apply rounded-3xl border;
+    background-color: hsl(var(--card));
+    border-color: hsl(var(--border));
+  }
+
+  .glass-panel {
+    @apply border backdrop-blur-xl;
+    background-color: hsl(var(--card) / 0.8);
+    border-color: hsl(var(--border) / 0.6);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg transition-all;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 10px 25px hsl(var(--primary) / 0.3);
+  }
+
+  .btn-primary:hover {
+    background-color: hsl(var(--primary) / 0.9);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold border transition-all;
+    background-color: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    border-color: hsl(var(--border));
+  }
+
+  .btn-secondary:hover {
+    background-color: hsl(var(--secondary) / 0.8);
+  }
+
+  .stat-label {
+    @apply text-xs;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .stat-value {
+    @apply text-lg font-semibold;
+  }
+
+  .blur-blob {
+    @apply absolute rounded-full blur-3xl opacity-60;
+  }
+
+  .card-gradient-border {
+    position: relative;
+    border-radius: 24px;
+    background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.4), transparent 55%),
+      radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.25), transparent 55%);
+  }
+
+  .card-gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 24px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(45, 212, 191, 0.4), rgba(56, 189, 248, 0.15));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.8;
+  }
+
+  .card-inner {
+    position: relative;
+    border-radius: 22px;
+    background: radial-gradient(circle at top, rgba(15, 23, 42, 0.4), transparent 60%),
+      radial-gradient(circle at bottom, rgba(15, 23, 42, 0.7), transparent 60%);
+    box-shadow: 0 0 40px -10px hsl(var(--primary) / 0.3);
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.4); }
+    50% { box-shadow: 0 0 40px hsl(var(--primary) / 0.6); }
   }
 }
 
-@media (min-width: 768px) {
-  .middle-photo {
-    width: 200px;
-    height: 200px;
+/* utility layer extension for border-border */
+@layer utilities {
+  .border-border {
+    border-color: hsl(var(--border));
   }
-}
-.img1,
-.img2,
-.img3 {
-  background-size: cover;
-  scale: 0;
-  width: 250px;
-  height: 250px;
-}
-
-@media (min-width: 640px) {
-  .img1,
-  .img2,
-  .img3 {
-    width: 300px;
-    height: 300px;
-  }
-}
-
-@media (min-width: 768px) {
-  .img1,
-  .img2,
-  .img3 {
-    width: 400px;
-    height: 400px;
-  }
-}
-/* sign up page */
-.signup,
-.login {
-  @apply bg-yellow-500 text-white rounded-lg font-semibold hover:bg-yellow-600 transition text-2xl h-[30px];
-}
-.options > div {
-  @apply p-1 transition-colors;
-}
-.options > div:hover {
-  @apply bg-amber-400 cursor-pointer;
-}
-.menu > button {
-  @apply hover:cursor-pointer hover:border-2 transition-all rounded-2xl w-[25%];
-}
-.card {
-  @apply flex-1 h-[350px] p-4 shadow hover:shadow-lg transition rounded-2xl hover:-translate-y-4 hover:bg-gray-700 bg-gray-600 flex flex-col items-center gap-10;
 }

@@ -1,8 +1,8 @@
-import signupImg from "/signupImage.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { authAPI, setAuthToken } from "../../services/api";
 import { UserPlus } from "lucide-react";
+import Header from "../../Components/Header";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -19,7 +19,6 @@ const SignUp = () => {
     e.preventDefault();
     setError("");
 
-    // Validation
     if (password !== repeatedPassword) {
       setError("Passwords do not match");
       return;
@@ -49,14 +48,12 @@ const SignUp = () => {
 
       const { user, tokens } = response.data;
 
-      // Store tokens and user info
       setAuthToken(tokens.accessToken);
       localStorage.setItem("userId", user._id || user.id);
       localStorage.setItem("userRole", user.role || "user");
       localStorage.setItem("username", `${user.firstName} ${user.lastName}`);
       localStorage.setItem("refreshToken", tokens.refreshToken);
 
-      // Navigate based on role
       if (user.role === "admin") {
         navigate("/admin");
       } else if (user.role === "coach") {
@@ -71,9 +68,12 @@ const SignUp = () => {
       setLoading(false);
     }
   };
+
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-background text-foreground pt-16">
+      <Header hideNav />
+
+      <div className="max-w-6xl mx-auto p-8">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold mb-2 flex items-center justify-center gap-2">
             <UserPlus className="w-8 h-8" />
@@ -115,7 +115,6 @@ const SignUp = () => {
                 />
               </div>
 
-              {/* Email */}
               <div className="flex flex-col">
                 <label htmlFor="email" className="text-sm text-gray-400 mb-1">
                   Email
@@ -131,7 +130,6 @@ const SignUp = () => {
                 />
               </div>
 
-              {/* Password */}
               <div className="flex flex-col">
                 <label htmlFor="password" className="text-sm text-gray-400 mb-1">
                   Password
@@ -147,9 +145,11 @@ const SignUp = () => {
                 />
               </div>
 
-              {/* Confirm Password */}
               <div className="flex flex-col">
-                <label htmlFor="confirmPassword" className="text-sm text-gray-400 mb-1">
+                <label
+                  htmlFor="confirmPassword"
+                  className="text-sm text-gray-400 mb-1"
+                >
                   Confirm Password
                 </label>
                 <input
@@ -163,7 +163,6 @@ const SignUp = () => {
                 />
               </div>
 
-              {/* Account Type */}
               <div className="flex flex-col">
                 <label htmlFor="accountType" className="text-sm text-gray-400 mb-1">
                   Account Type
@@ -187,7 +186,6 @@ const SignUp = () => {
                 </div>
               )}
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -197,7 +195,6 @@ const SignUp = () => {
                 {loading ? "Creating account..." : "Sign Up"}
               </button>
 
-              {/* Login Link */}
               <p className="text-center text-sm mt-2 text-gray-400">
                 Already have an account?{" "}
                 <Link
@@ -211,7 +208,11 @@ const SignUp = () => {
           </div>
 
           <div className="hidden lg:flex justify-center">
-            <img src={signupImg} alt="Sign up" className="w-full max-w-md rounded-lg" />
+            <img
+              src="https://i.postimg.cc/YjchvZLn/signup-Image.png"
+              alt="Sign up"
+              className="w-full max-w-md rounded-lg"
+            />
           </div>
         </div>
       </div>

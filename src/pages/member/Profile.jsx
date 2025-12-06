@@ -192,7 +192,7 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 text-gray-100">
+      <div className="min-h-screen bg-background text-foreground pt-16">
         <MemberHeader />
         <div className="p-8">
           <div className="max-w-6xl mx-auto">
@@ -205,7 +205,7 @@ const Profile = () => {
 
   if (error && !profile) {
     return (
-      <div className="min-h-screen bg-gray-900 text-gray-100">
+      <div className="min-h-screen bg-background text-foreground pt-16">
         <MemberHeader />
         <div className="p-8">
           <div className="max-w-6xl mx-auto">
@@ -223,7 +223,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen bg-background text-foreground pt-16">
       <MemberHeader />
       <div className="p-8">
         <div className="max-w-6xl mx-auto">

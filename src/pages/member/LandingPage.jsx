@@ -162,7 +162,7 @@ const LandingPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 text-gray-100">
+      <div className="min-h-screen bg-background text-foreground pt-16">
         <MemberHeader />
         <div className="p-8">
           <div className="max-w-7xl mx-auto">
@@ -174,7 +174,7 @@ const LandingPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen bg-background text-foreground pt-16">
       <MemberHeader />
       <div className="p-8">
         <div className="max-w-7xl mx-auto">

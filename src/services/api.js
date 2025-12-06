@@ -92,10 +92,12 @@ export const authAPI = {
 
 // Public (unauthenticated) API functions
 export const publicAPI = {
-  getCoaches: async () => {
-    const response = await fetch(`${API_BASE_URL}/auth/coaches`);
-    return response.json();
-  },
+  getCoaches: async (limit = 4) => {
+      const response = await fetch(
+        `${API_BASE_URL}/public/coaches?limit=${limit}`
+      );
+      return response.json();
+    },
 };
 
 // User API functions

@@ -1,38 +1,46 @@
+// src/App.jsx
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+  Route,
+} from "react-router-dom";
+
 import HomeLayout from "./layouts/HomeLayout";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import CoachDashboard from "./pages/coach/CoachDashboard";
-import CoachQuestionary from "./pages/coach/CoachQuestionary";
+import MemberLayout from "./layouts/MemberLayout";
+
 import Home from "./pages/home/Home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
-import MemberLayout from "./layouts/MemberLayout";
+
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import CoachDashboard from "./pages/coach/CoachDashboard";
+import CoachQuestionary from "./pages/coach/CoachQuestionary";
+
 import MemberHome from "./pages/member/MemberHome";
 import Questionary from "./pages/member/Questionary";
 import FitnessGoal from "./pages/member/FitnessGoal";
 import Schedule from "./pages/member/Schedule";
 import Preferences from "./pages/member/Preferences";
-import Services from "./pages/home/Services";
 import LandingPage from "./pages/member/LandingPage";
 import Profile from "./pages/member/Profile";
-import {
-  Route,
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider,
-} from "react-router-dom";
 
-const App = () => {
+import { ThemeProvider } from "./Components/ThemeProvider.jsx";
+
+function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
+        {/* Public landing page */}
         <Route path="/" element={<HomeLayout />}>
           <Route index element={<Home />} />
-          <Route path="#service" element={<Services />} />
         </Route>
-        {/* Auth Routes - Outside HomeLayout */}
+
+        {/* Auth routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        {/* Member Routes */}
+
+        {/* Member routes */}
         <Route path="/member" element={<MemberLayout />}>
           <Route index element={<MemberHome />} />
           <Route path="questionary" element={<Questionary />} />
@@ -42,15 +50,20 @@ const App = () => {
           <Route path="landingPage" element={<LandingPage />} />
           <Route path="profile" element={<Profile />} />
         </Route>
+
+        {/* Coach / admin routes */}
         <Route path="/coach/questionary" element={<CoachQuestionary />} />
         <Route path="/coach" element={<CoachDashboard />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        {/* <Route path="/admin" element="AdminLayout">
-
-        </Route> */}
       </>
     )
   );
-  return <RouterProvider router={router} />;
+
+  return (
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 }
+
 export default App;

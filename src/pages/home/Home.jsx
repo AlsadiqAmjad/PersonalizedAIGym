@@ -1,16 +1,19 @@
-import Hero from "./Hero";
-import SubHero from "./SubHero";
-import Hero2 from "./Hero2";
-import Services from "./Services";
-import Coaches from "./Coaches";
+import Header from "../../Components/Header.jsx";
+import HeroSection from "../../Components/HeroSection.jsx";
+import ServicesSection from "../../Components/ServicesSection.jsx";
+import CoachesSection from "../../Components/CoachesSection.jsx";
+import Footer from "../../Components/Footer.jsx";
+
 const Home = () => {
   return (
-    <div className="w-full overflow-x-hidden">
-      <SubHero />
-      <Hero />
-      <Hero2 />
-      <Services />
-      <Coaches />
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main>
+        <HeroSection />
+        <ServicesSection />
+        <CoachesSection />
+      </main>
+      <Footer />
     </div>
   );
 };
