@@ -1,6 +1,14 @@
 import { Flame, TrendingUp, Zap } from "lucide-react";
 
 const HeroSection = () => {
+
+  const scrollToSection = (selector) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section id="home" className="min-h-screen flex items-center pt-16 relative overflow-hidden">
       {/* Background Elements */}
@@ -33,13 +41,13 @@ const HeroSection = () => {
 
             <div className="flex flex-wrap gap-4">
               <a
-                href="#services"
+                onClick={() => scrollToSection("#services")}
                 className="px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all hover:scale-105 animate-pulse-glow"
               >
                 Get Started Free
               </a>
               <a
-                href="#coaches"
+                onClick={() => scrollToSection("#coaches")}
                 className="px-8 py-4 bg-secondary text-foreground rounded-xl font-semibold hover:bg-secondary/80 transition-all border border-border"
               >
                 Meet Our Coaches

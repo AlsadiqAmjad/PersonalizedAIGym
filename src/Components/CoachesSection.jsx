@@ -8,25 +8,25 @@ const FALLBACK_COACHES = [
     id: "fallback-1",
     name: "Sarah Johnson",
     specialty: "Strength & HIIT",
-    image: "https://i.postimg.cc/P5f1yMZY/Screenshot-3.png",
+    image: "https://randomuser.me/api/portraits/women/44.jpg",
   },
   {
     id: "fallback-2",
     name: "Mike Chen",
     specialty: "CrossFit & Conditioning",
-    image: "https://i.postimg.cc/P5f1yMZY/Screenshot-3.png",
+    image: "https://randomuser.me/api/portraits/men/32.jpg",
   },
   {
     id: "fallback-3",
     name: "Emma Davis",
     specialty: "Yoga & Flexibility",
-    image: "https://i.postimg.cc/P5f1yMZY/Screenshot-3.png",
+    image: "https://randomuser.me/api/portraits/women/68.jpg",
   },
   {
     id: "fallback-4",
     name: "Alex Rivera",
     specialty: "Strength & Mobility",
-    image: "https://i.postimg.cc/P5f1yMZY/Screenshot-3.png",
+    image: "https://randomuser.me/api/portraits/men/56.jpg",
   },
 ];
 const DEMO = import.meta.env.VITE_DEMO === "true";
