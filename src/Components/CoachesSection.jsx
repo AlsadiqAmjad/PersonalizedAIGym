@@ -29,6 +29,7 @@ const FALLBACK_COACHES = [
     image: "https://i.postimg.cc/P5f1yMZY/Screenshot-3.png",
   },
 ];
+const DEMO = import.meta.env.VITE_DEMO === "true";
 
 const CoachesSection = () => {
   const [coaches, setCoaches] = useState(FALLBACK_COACHES);
@@ -62,6 +63,13 @@ const CoachesSection = () => {
         if (isMounted) setLoading(false);
       }
     };
+
+    if (DEMO) {
+      setLoading(false);
+      return () => {
+        isMounted = false;
+      };
+    }
 
     loadCoaches();
 

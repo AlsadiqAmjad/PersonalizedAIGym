@@ -4,6 +4,7 @@ import { useTheme } from "./ThemeProvider.jsx";
 import { Dumbbell, Sun, Moon, Menu, X } from "lucide-react";
 
 const Header = ({ hideNav = false }) => {
+  const DEMO = import.meta.env.VITE_DEMO === "true";
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -76,25 +77,23 @@ const Header = ({ hideNav = false }) => {
           <div className="hidden md:flex items-center gap-4">
             {isLoggedIn ? (
               <button
-                onClick={handleDashboardClick}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
-              >
-                Dashboard
-              </button>
+                onClick={DEMO ? undefined : handleDashboardClick}
+                disabled={DEMO}
+                title={DEMO ? "Disabled in public demo" : ""}
+                className={`px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium transition-colors ${DEMO ? "opacity-60 cursor-not-allowed" : "hover:bg-primary/90"}`}>Dashboard</button>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/signup"
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
-                >
-                  Sign Up
-                </Link>
+                {DEMO ? (
+                  <button disabled title="Disabled in public demo" className="text-muted-foreground font-medium opacity-60 cursor-not-allowed">Login</button>
+                ) : (
+                  <Link to="/login" className="text-muted-foreground hover:text-foreground transition-colors font-medium"> Login </Link>
+                )}
+
+                {DEMO ? (
+                  <button disabled title="Disabled in public demo" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium opacity-60 cursor-not-allowed">Sign Up</button>
+                ) : (
+                  <Link to="/signup" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors">Sign Up</Link>
+                )}
               </>
             )}
             <button
@@ -138,25 +137,23 @@ const Header = ({ hideNav = false }) => {
               <div className="flex items-center gap-4 pt-4 border-t border-border">
                 {isLoggedIn ? (
                   <button
-                    onClick={handleDashboardClick}
-                    className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium"
-                  >
-                    Dashboard
-                  </button>
+                    onClick={DEMO ? undefined : handleDashboardClick}
+                    disabled={DEMO}
+                    title={DEMO ? "Disabled in public demo" : ""}
+                    className={`px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium ${DEMO ? "opacity-60 cursor-not-allowed" : ""}`}>Dashboard</button>
                 ) : (
                   <>
-                    <Link
-                      to="/login"
-                      className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      to="/signup"
-                      className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium"
-                    >
-                      Sign Up
-                    </Link>
+                    {DEMO ? (
+                      <button disabled title="Disabled in public demo" className="text-muted-foreground font-medium opacity-60 cursor-not-allowed">Login</button>
+                    ) : (
+                      <Link to="/login" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Login</Link>
+                    )}
+
+                    {DEMO ? (
+                      <button disabled title="Disabled in public demo" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium opacity-60 cursor-not-allowed">Sign Up</button>
+                    ) : (
+                      <Link to="/signup" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium">Sign Up</Link>
+                    )}
                   </>
                 )}
                 <button onClick={toggleTheme} className="p-2 rounded-lg bg-secondary">
