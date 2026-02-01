@@ -14,13 +14,13 @@ const FALLBACK_COACHES = [
     id: "fallback-2",
     name: "Mike Chen",
     specialty: "CrossFit & Conditioning",
-    image: "https://images.unsplash.com/photo-1595705656193-5ff3a6b04e14?w=400&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=400&h=400&fit=crop",
   },
   {
     id: "fallback-3",
     name: "Emma Davis",
     specialty: "Yoga & Flexibility",
-    image: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=400&h=400&fit=crop",
   },
   {
     id: "fallback-4",
