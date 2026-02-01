@@ -1,6 +1,6 @@
 // src/App.jsx
 import {
-  createBrowserRouter,
+  createHashRouter,
   createRoutesFromElements,
   RouterProvider,
   Route,
@@ -28,7 +28,7 @@ import Profile from "./pages/member/Profile";
 import { ThemeProvider } from "./Components/ThemeProvider.jsx";
 
 function App() {
-  const router = createBrowserRouter(
+  const router = createHashRouter(
     createRoutesFromElements(
       <>
         {/* Public landing page */}
